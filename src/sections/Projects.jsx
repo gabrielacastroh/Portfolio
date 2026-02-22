@@ -1,0 +1,182 @@
+import { motion } from "framer-motion";
+import { projects } from "../data/mockData";
+import { getTranslation } from "../data/translations";
+import { useLanguage } from "../contexts/LanguageContext";
+
+const container = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1, delayChildren: 0.2 },
+  },
+};
+
+const card = {
+  hidden: { opacity: 0, y: 32 },
+  show: { opacity: 1, y: 0 },
+};
+
+function ProjectCard({ project, index, t, language }) {
+  const isEn = language === "en";
+  const title = isEn && project.titleEn ? project.titleEn : project.title;
+  const description = isEn && project.descriptionEn ? project.descriptionEn : project.description;
+  const tech = project.tech ?? [];
+  const repoUrl = project.repo;
+  const demoUrl = project.demo;
+  const image = project.image;
+
+  return (
+    <motion.article
+      variants={card}
+      className="group relative flex flex-col h-full rounded-2xl border bg-theme-card overflow-hidden backdrop-blur-sm transition-all duration-300 hover:opacity-95"
+      style={{ borderColor: "var(--border)" }}
+    >
+      {/* Imagen: 16:9 fija arriba */}
+      <div className="w-full aspect-video shrink-0 rounded-t-2xl overflow-hidden bg-theme-base">
+        {image ? (
+          <img src={image} alt="" className="w-full h-full object-cover" />
+        ) : (
+          <div
+            className="w-full h-full flex items-center justify-center"
+            style={{ backgroundColor: "var(--bg-card)" }}
+            aria-hidden
+          >
+            <span className="text-theme-muted-2 text-xs font-medium">
+              {t("projects.project")} {String(index + 1).padStart(2, "0")}
+            </span>
+          </div>
+        )}
+      </div>
+
+      {/* Contenido: espacios reservados para que todas las cards queden alineadas */}
+      <div className="flex flex-col flex-1 min-h-0 p-4 sm:p-5 md:p-6">
+        {/* Nombre: 2 líneas max, tamaño reducido */}
+        <h3
+          className="font-display font-bold text-base sm:text-lg mb-2 line-clamp-2 transition-colors group-hover:opacity-80"
+          style={{ color: "var(--text-primary)" }}
+          title={title}
+        >
+          {title}
+        </h3>
+
+        {/* Descripción: 3 líneas fijas, mismo alto en todas las cards */}
+        <p
+          className="text-theme-muted text-xs sm:text-sm leading-relaxed line-clamp-3 min-h-[3.75rem] mb-3"
+          title={description}
+        >
+          {description}
+        </p>
+
+        {/* Tecnologías: altura mínima para ~2 filas de tags */}
+        <div className="flex flex-wrap gap-2 min-h-[3.25rem] mb-4">
+          {tech.map((item) => (
+            <span
+              key={item}
+              className="px-2.5 py-1 text-xs font-medium rounded-lg bg-theme-card border border-theme"
+              style={{ color: "var(--text-muted)" }}
+            >
+              {item}
+            </span>
+          ))}
+        </div>
+
+        {/* Espacio flexible: empuja los botones al fondo */}
+        <div className="flex-1 min-h-2" />
+
+        {/* Acciones: siempre abajo */}
+        <div className="flex flex-wrap items-center gap-2 shrink-0 pt-1">
+          {repoUrl && (
+            <motion.a
+              href={repoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium border transition-all hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/50"
+              style={{
+                borderColor: "var(--border)",
+                backgroundColor: "var(--bg-card)",
+                color: "var(--text-primary)",
+              }}
+            >
+              <span>{t("projects.repository")}</span>
+              <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+                <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
+              </svg>
+            </motion.a>
+          )}
+          {demoUrl && (
+            <motion.a
+              href={demoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium text-white transition-all focus:outline-none focus:ring-2 focus:ring-white/30 shadow-lg"
+              style={{
+                background: "linear-gradient(135deg, #7c3aed 0%, #a78bfa 50%, #c4b5fd 100%)",
+                boxShadow: "0 0 0 1px rgba(255,255,255,0.1), 0 4px 14px rgba(124, 58, 237, 0.35)",
+              }}
+            >
+              <span>{t("projects.demo")}</span>
+              <svg className="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 24 24" aria-hidden>
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            </motion.a>
+          )}
+        </div>
+      </div>
+
+      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none bg-gradient-to-br from-[#a78bfa]/5 to-transparent" />
+    </motion.article>
+  );
+}
+
+function Projects() {
+  const { language } = useLanguage();
+  const t = (key) => getTranslation(language, key);
+
+  return (
+    <section
+      id="projects"
+      className="relative min-h-screen min-h-[100dvh] flex flex-col justify-center px-4 sm:px-6 py-16 sm:py-24 border-t border-theme-subtle"
+    >
+      <div className="max-w-6xl mx-auto w-full">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.5 }}
+          className="mb-8 sm:mb-12 md:mb-16"
+        >
+          <h2 className="font-display font-bold text-2xl sm:text-3xl md:text-4xl" style={{ color: "var(--text-primary)" }}>
+            {t("projects.title")}
+          </h2>
+          <p className="mt-2 text-theme-muted-2 text-sm sm:text-base max-w-xl">
+            {t("projects.subtitle")}
+          </p>
+        </motion.div>
+
+        <motion.div
+          variants={container}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-60px" }}
+          className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 items-stretch"
+        >
+          {projects.map((project, index) => (
+            <ProjectCard
+              key={project.id}
+              project={project}
+              index={index}
+              t={t}
+              language={language}
+            />
+          ))}
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+export default Projects;
