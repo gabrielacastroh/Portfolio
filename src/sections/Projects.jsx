@@ -1,7 +1,9 @@
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { projects } from "../data/mockData";
 import { getTranslation } from "../data/translations";
 import { useLanguage } from "../contexts/LanguageContext";
+import ProjectModal from "../components/ProjectModal";
 
 const container = {
   hidden: { opacity: 0 },
@@ -16,7 +18,7 @@ const card = {
   show: { opacity: 1, y: 0 },
 };
 
-function ProjectCard({ project, index, t, language }) {
+function ProjectCard({ project, index, t, language, onSelect }) {
   const isEn = language === "en";
   const title = isEn && project.titleEn ? project.titleEn : project.title;
   const description = isEn && project.descriptionEn ? project.descriptionEn : project.description;
@@ -28,7 +30,8 @@ function ProjectCard({ project, index, t, language }) {
   return (
     <motion.article
       variants={card}
-      className="group relative flex flex-col h-full rounded-2xl border bg-theme-card overflow-hidden backdrop-blur-sm transition-all duration-300 hover:opacity-95"
+      onClick={() => onSelect(project)}
+      className="group relative flex flex-col h-full rounded-2xl border bg-theme-card overflow-hidden backdrop-blur-sm transition-all duration-300 hover:opacity-95 cursor-pointer"
       style={{ borderColor: "var(--border)" }}
     >
       {/* Imagen: 16:9 fija arriba */}
@@ -48,9 +51,8 @@ function ProjectCard({ project, index, t, language }) {
         )}
       </div>
 
-      {/* Contenido: espacios reservados para que todas las cards queden alineadas */}
+      {/* Contenido */}
       <div className="flex flex-col flex-1 min-h-0 p-4 sm:p-5 md:p-6">
-        {/* Nombre: 2 líneas max, tamaño reducido */}
         <h3
           className="font-display font-bold text-base sm:text-lg mb-2 line-clamp-2 transition-colors group-hover:opacity-80"
           style={{ color: "var(--text-primary)" }}
@@ -59,7 +61,6 @@ function ProjectCard({ project, index, t, language }) {
           {title}
         </h3>
 
-        {/* Descripción: 3 líneas fijas, mismo alto en todas las cards */}
         <p
           className="text-theme-muted text-xs sm:text-sm leading-relaxed line-clamp-3 min-h-[3.75rem] mb-3"
           title={description}
@@ -67,7 +68,6 @@ function ProjectCard({ project, index, t, language }) {
           {description}
         </p>
 
-        {/* Tecnologías: altura mínima para ~2 filas de tags */}
         <div className="flex flex-wrap gap-2 min-h-[3.25rem] mb-4">
           {tech.map((item) => (
             <span
@@ -80,11 +80,13 @@ function ProjectCard({ project, index, t, language }) {
           ))}
         </div>
 
-        {/* Espacio flexible: empuja los botones al fondo */}
         <div className="flex-1 min-h-2" />
 
-        {/* Acciones: siempre abajo */}
-        <div className="flex flex-wrap items-center gap-2 shrink-0 pt-1">
+        {/* Acciones — stopPropagation para no abrir el modal */}
+        <div
+          className="flex flex-wrap items-center gap-2 shrink-0 pt-1"
+          onClick={(e) => e.stopPropagation()}
+        >
           {repoUrl && (
             <motion.a
               href={repoUrl}
@@ -135,47 +137,63 @@ function ProjectCard({ project, index, t, language }) {
 function Projects() {
   const { language } = useLanguage();
   const t = (key) => getTranslation(language, key);
+  const [selectedProject, setSelectedProject] = useState(null);
 
   return (
-    <section
-      id="projects"
-      className="relative min-h-screen min-h-[100dvh] flex flex-col justify-center px-4 sm:px-6 py-16 sm:py-24 border-t border-theme-subtle"
-    >
-      <div className="max-w-6xl mx-auto w-full">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.5 }}
-          className="mb-8 sm:mb-12 md:mb-16"
-        >
-          <h2 className="font-display font-bold text-2xl sm:text-3xl md:text-4xl" style={{ color: "var(--text-primary)" }}>
-            {t("projects.title")}
-          </h2>
-          <p className="mt-2 text-theme-muted-2 text-sm sm:text-base max-w-xl">
-            {t("projects.subtitle")}
-          </p>
-        </motion.div>
+    <>
+      <section
+        id="projects"
+        className="relative min-h-screen min-h-[100dvh] flex flex-col justify-center px-4 sm:px-6 py-16 sm:py-24 border-t border-theme-subtle"
+      >
+        <div className="max-w-6xl mx-auto w-full">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.5 }}
+            className="mb-8 sm:mb-12 md:mb-16"
+          >
+            <h2 className="font-display font-bold text-2xl sm:text-3xl md:text-4xl" style={{ color: "var(--text-primary)" }}>
+              {t("projects.title")}
+            </h2>
+            <p className="mt-2 text-theme-muted-2 text-sm sm:text-base max-w-xl">
+              {t("projects.subtitle")}
+            </p>
+          </motion.div>
 
-        <motion.div
-          variants={container}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: "-60px" }}
-          className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 items-stretch"
-        >
-          {projects.map((project, index) => (
-            <ProjectCard
-              key={project.id}
-              project={project}
-              index={index}
-              t={t}
-              language={language}
-            />
-          ))}
-        </motion.div>
-      </div>
-    </section>
+          <motion.div
+            variants={container}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: "-60px" }}
+            className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 items-stretch"
+          >
+            {projects.map((project, index) => (
+              <ProjectCard
+                key={project.id}
+                project={project}
+                index={index}
+                t={t}
+                language={language}
+                onSelect={setSelectedProject}
+              />
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Modal */}
+      <AnimatePresence>
+        {selectedProject && (
+          <ProjectModal
+            project={selectedProject}
+            onClose={() => setSelectedProject(null)}
+            t={t}
+            language={language}
+          />
+        )}
+      </AnimatePresence>
+    </>
   );
 }
 
