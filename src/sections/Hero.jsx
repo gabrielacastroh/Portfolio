@@ -20,6 +20,7 @@ function Hero() {
   const { language } = useLanguage();
   const t = (key) => getTranslation(language, key);
   const tagline = language === "en" && personal.taglineEn ? personal.taglineEn : personal.tagline;
+  const cvUrl = language === "en" ? contact.cvUrlEn : contact.cvUrlEs;
 
   return (
     <section
@@ -72,9 +73,9 @@ function Hero() {
             <span aria-hidden>@</span>
             {t("hero.contactMe")}
           </a>
-          {contact.cvUrl && (
+          {cvUrl && (
             <a
-              href={contact.cvUrl}
+              href={cvUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-3 sm:px-4 py-2.5 rounded-lg border bg-theme-card text-xs sm:text-sm font-medium focus:outline-none focus:ring-2 transition-colors min-h-[44px] items-center"

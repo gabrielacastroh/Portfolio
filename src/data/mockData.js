@@ -92,34 +92,97 @@ export const projects = [
     repo: "https://github.com/gabrielacastroh/Momentum.git",
     demo: "",
   },
+  {
+    id: "4",
+    title: "QA Intelligence Platform — Auditor Web con IA",
+    titleEn: "QA Intelligence Platform — AI-Powered Web QA Auditor",
+    description:
+      "Plataforma de QA con IA que audita URLs públicas con Playwright, axe-core y LLMs para generar análisis técnicos, reportes de accesibilidad y diagnósticos de navegador.",
+    descriptionEn:
+      "AI-powered QA auditing platform using Playwright, FastAPI and LLMs to generate automated technical reviews, accessibility reports and browser diagnostics.",
+    longDescription:
+      "QA Intelligence Platform es una plataforma de auditoría web impulsada por IA que analiza URLs públicas de forma automatizada. Utiliza Playwright para capturar screenshots y diagnosticar errores de consola, axe-core para análisis de accesibilidad, métricas de rendimiento del navegador y LLMs (vía Groq API) para generar revisiones técnicas detalladas en lenguaje natural.\n\nEl backend está construido con FastAPI y Python, dockerizado para facilitar el despliegue. El frontend en React y TypeScript ofrece una interfaz tipo dashboard con resultados en tiempo real.",
+    longDescriptionEn:
+      "QA Intelligence Platform is an AI-powered web auditing platform that automatically analyzes public URLs. It uses Playwright for full-page screenshots and console error monitoring, axe-core for accessibility analysis, browser performance metrics, and LLMs (via Groq API) to generate detailed technical reviews in natural language.\n\nThe backend is built with FastAPI and Python, containerized with Docker for easy deployment. The React + TypeScript frontend delivers a dashboard-style interface with real-time audit results.",
+    image: "/projects/qa-intelligence.png",
+    tech: ["React", "TypeScript", "FastAPI", "Python", "Playwright", "Docker", "Groq API", "axe-core", "Tailwind CSS"],
+    repo: "https://github.com/gabrielacastroh/qa-intelligence-platform",
+    demo: "https://qa-intelligence-vercel.vercel.app/run-test",
+  },
 ];
 
 
-export const skills = [
-  // Frontend: bases → lenguajes → framework
-  { name: "HTML", icon: "html5" },
-  { name: "CSS", icon: "css" },
-  { name: "JavaScript", icon: "javascript" },
-  { name: "TypeScript", icon: "typescript" },
-  { name: "React", icon: "react" },
-  { name: "Tailwind CSS", icon: "tailwindcss" },
-  { name: "Next.js", icon: "nextdotjs" },
-  { name: "Material UI", icon: "mui" },
-  { name: "Responsive Design", icon: "css" },
-  // Backend
-  { name: "Python", icon: "python" },
-  { name: "Django REST Framework", icon: "django" },
-  { name: "APIs REST", icon: "swagger" },
-  // Mobile
-  { name: "Flutter", icon: "flutter" },
-  // Base de datos
-  { name: "SQL", icon: "sqlite" },
-  { name: "PostgreSQL", icon: "postgresql" },
-  // Herramientas
-  { name: "Git", icon: "git" },
-  { name: "GitHub", icon: "github" },
-  { name: "Postman", icon: "postman" },
-  { name: "Figma", icon: "figma" },
+export const skillCategories = [
+  {
+    id: "frontend",
+    label: "Frontend",
+    labelEn: "Frontend",
+    skills: [
+      { name: "React", icon: "react" },
+      { name: "Next.js", icon: "nextdotjs" },
+      { name: "TypeScript", icon: "typescript" },
+      { name: "JavaScript", icon: "javascript" },
+      { name: "Tailwind CSS", icon: "tailwindcss" },
+      { name: "Material UI", icon: "mui" },
+    ],
+  },
+  {
+    id: "backend",
+    label: "Backend",
+    labelEn: "Backend",
+    skills: [
+      { name: "FastAPI", icon: "fastapi" },
+      { name: "Django REST", icon: "django" },
+      { name: "Flask", icon: "flask" },
+      { name: "GraphQL", icon: "graphql" },
+      { name: "REST APIs", icon: "swagger" },
+      { name: "JWT", icon: "jsonwebtokens" },
+      { name: "OAuth", icon: "openid" },
+    ],
+  },
+  {
+    id: "state-data",
+    label: "State & Data",
+    labelEn: "State & Data",
+    skills: [
+      { name: "Zustand", icon: "zustand" },
+      { name: "Redux Toolkit", icon: "redux" },
+      { name: "TanStack Query", icon: "reactquery" },
+      { name: "PostgreSQL", icon: "postgresql" },
+      { name: "SQL Server", icon: "microsoftsqlserver" },
+    ],
+  },
+  {
+    id: "cloud-devops",
+    label: "Cloud & DevOps",
+    labelEn: "Cloud & DevOps",
+    skills: [
+      { name: "Docker", icon: "docker" },
+      { name: "AWS", icon: "amazonaws" },
+      { name: "Linux", icon: "linux" },
+      { name: "Git", icon: "git" },
+    ],
+  },
+  {
+    id: "testing-ai",
+    label: "Testing & AI",
+    labelEn: "Testing & AI",
+    skills: [
+      { name: "Playwright", icon: "playwright" },
+      { name: "axe-core", icon: "axecore" },
+      { name: "LLMs", icon: "openai" },
+      { name: "Groq API", icon: "groq" },
+    ],
+  },
+  {
+    id: "mobile",
+    label: "Mobile",
+    labelEn: "Mobile",
+    skills: [
+      { name: "Flutter", icon: "flutter" },
+      { name: "Dart", icon: "dart" },
+    ],
+  },
 ];
 
 export const contact = {
@@ -132,7 +195,9 @@ export const contact = {
   locationEn: "Barranquilla, Colombia",
   linkedin: "https://www.linkedin.com/in/gabriela-castro-hernandez-gch",
   github: "https://github.com/gabrielacastroh",
-  cvUrl: "/CV-2025-E.pdf",
+  /** CV PDF en /public según idioma del sitio (_E = español, _I = inglés). */
+  cvUrlEs: "/Gabriela_Castro_CV_E.pdf",
+  cvUrlEn: "/Gabriela_Castro_CV_I.pdf",
   formSuccessMessage: "Mensaje enviado. Te responderé pronto.",
   formSuccessMessageEn: "Message sent. I'll get back to you soon.",
   formErrorMessage: "Algo falló. Intenta de nuevo o escríbeme a mi email.",
