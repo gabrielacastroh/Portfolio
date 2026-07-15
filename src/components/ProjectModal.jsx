@@ -90,6 +90,8 @@ function ProjectModal({ project, onClose, t, language }) {
   }, [onClose]);
 
   const title = isEn && project.titleEn ? project.titleEn : project.title;
+  const typeLabel = isEn && project.typeLabelEn ? project.typeLabelEn : project.typeLabel;
+  const isClientProject = project.type === "client";
 
   const fullDesc = isEn
     ? project.longDescriptionEn || project.descriptionEn || project.description
@@ -144,17 +146,31 @@ function ProjectModal({ project, onClose, t, language }) {
 
           {/* Header */}
           <div className="relative flex items-start justify-between gap-4 p-5 sm:p-6 pb-4 sm:pb-5">
-            <h2
-              className="font-display font-bold text-xl sm:text-2xl leading-tight"
-              style={{ color: "var(--text-primary)" }}
-            >
-              {title}
-            </h2>
+            <div className="min-w-0">
+              {typeLabel && (
+                <span
+                  className="inline-block mb-2 px-2.5 py-1 rounded-full text-[0.65rem] font-semibold uppercase tracking-wide"
+                  style={
+                    isClientProject
+                      ? { backgroundColor: "var(--accent)", color: "#fff" }
+                      : { backgroundColor: "var(--bg-card)", color: "var(--text-muted)", border: "1px solid var(--border)" }
+                  }
+                >
+                  {typeLabel}
+                </span>
+              )}
+              <h2
+                className="font-display font-bold text-xl sm:text-2xl leading-tight"
+                style={{ color: "var(--text-primary)" }}
+              >
+                {title}
+              </h2>
+            </div>
             <button
               onClick={onClose}
               className="mt-0.5 shrink-0 w-8 h-8 rounded-full flex items-center justify-center border transition-colors hover:bg-white/5"
               style={{ borderColor: "var(--border)", color: "var(--text-muted)" }}
-              aria-label="Cerrar modal"
+              aria-label={t("projects.close")}
             >
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
                 <path
@@ -233,7 +249,7 @@ function ProjectModal({ project, onClose, t, language }) {
                 {tech.map((item) => (
                   <span
                     key={item}
-                    className="px-2.5 py-1 text-xs font-medium rounded-lg bg-theme-card border border-theme"
+                    className="hover-lift px-2.5 py-1 text-xs font-medium rounded-lg bg-theme-card border border-theme"
                     style={{ color: "var(--text-muted)" }}
                   >
                     {item}

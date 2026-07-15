@@ -3,8 +3,16 @@ import { motion } from "framer-motion";
 import { contact } from "../data/mockData";
 import { getTranslation } from "../data/translations";
 import { useLanguage } from "../contexts/LanguageContext";
+import TitleReveal from "../components/TitleReveal";
 
 const formInitial = { name: "", email: "", message: "" };
+
+/** Netlify Forms requires a URL-encoded POST to "/" with the form-name field. */
+function encodeFormData(data) {
+  return Object.keys(data)
+    .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(data[key])}`)
+    .join("&");
+}
 
 function Contact() {
   const { language } = useLanguage();
@@ -25,10 +33,18 @@ function Contact() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setStatus("sending");
-    await new Promise((r) => setTimeout(r, 800));
-    console.log("Form submitted:", form);
-    setStatus("success");
-    setForm(formInitial);
+    try {
+      const response = await fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: encodeFormData({ "form-name": "contact", "bot-field": "", ...form }),
+      });
+      if (!response.ok) throw new Error(`Netlify Forms responded with ${response.status}`);
+      setStatus("success");
+      setForm(formInitial);
+    } catch {
+      setStatus("error");
+    }
   };
 
   return (
@@ -46,12 +62,29 @@ function Contact() {
             className="rounded-2xl border bg-theme-card p-6 sm:p-8 backdrop-blur-sm"
             style={{ borderColor: "var(--border)" }}
           >
-            <h2 className="font-display font-bold text-xl sm:text-2xl mb-1 sm:mb-2" style={{ color: "var(--text-primary)" }}>
-              {contactTitle}
-            </h2>
+            <TitleReveal
+              as="h2"
+              text={contactTitle}
+              className="font-display font-bold text-xl sm:text-2xl mb-1 sm:mb-2"
+              style={{ color: "var(--text-primary)" }}
+            />
             <p className="text-sm sm:text-base text-theme-muted-2 mb-4 sm:mb-5">{contactSubtitle}</p>
 
-            <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
+            <form
+              onSubmit={handleSubmit}
+              name="contact"
+              className="space-y-3 sm:space-y-4"
+            >
+              {/* Honeypot field for Netlify Forms spam filtering — kept off-screen, not display:none */}
+              <input
+                type="text"
+                name="bot-field"
+                tabIndex={-1}
+                autoComplete="off"
+                aria-hidden="true"
+                className="absolute w-px h-px overflow-hidden opacity-0 -z-10"
+                style={{ left: "-9999px" }}
+              />
               <div>
                 <label htmlFor="contact-name" className="block text-sm font-medium mb-1 text-theme-muted">
                       {t("contact.nameLabel")}

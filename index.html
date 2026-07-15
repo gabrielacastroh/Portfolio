@@ -4,8 +4,25 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="description" content="Portafolio profesional — Web Developer" />
-    <title>Portfolio | Gabriela Castro</title>
+    <meta
+      name="description"
+      content="Portafolio de Gabriela Castro — Ingeniera de software. Construyo sistemas empresariales, productos SaaS y herramientas con IA, del modelo de datos a la interfaz."
+    />
+    <title>Gabriela Castro — Ingeniera de software · Productos y sistemas completos</title>
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Gabriela Castro — Ingeniera de software · Productos y sistemas completos" />
+    <meta
+      property="og:description"
+      content="Construyo sistemas empresariales, productos SaaS y herramientas con IA, del modelo de datos a la interfaz."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://portfoliogch.netlify.app/" />
+    <!-- og:image pending: add /og-image.png (1200x630) and an <meta property="og:image"> tag once the asset exists -->
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -17,6 +34,22 @@
         if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
       })();
     </script>
+
+    <!--
+      Static Netlify Forms detection form.
+      Netlify only parses forms present in the built static HTML — this SPA submits
+      the real form via fetch() from Contact.jsx, but this hidden duplicate is what
+      lets Netlify's build bot register the "contact" form and its fields.
+      Field names below must stay in sync with src/sections/Contact.jsx.
+    -->
+    <form name="contact" data-netlify="true" netlify-honeypot="bot-field" hidden>
+      <input type="hidden" name="form-name" value="contact" />
+      <input type="text" name="bot-field" />
+      <input type="text" name="name" />
+      <input type="email" name="email" />
+      <textarea name="message"></textarea>
+    </form>
+
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

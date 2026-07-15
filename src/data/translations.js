@@ -7,8 +7,10 @@ export const translations = {
   es: {
     nav: {
       home: "Inicio",
+      whatIBuild: "Qué construyo",
       about: "Sobre mí",
       projects: "Proyectos",
+      howIWork: "Cómo trabajo",
       skills: "Skills",
       contact: "Contacto",
     },
@@ -16,6 +18,10 @@ export const translations = {
       hi: "Hola, soy",
       contactMe: "Contacto",
       downloadCv: "Descargar CV",
+    },
+    whatIBuild: {
+      title: "Qué construyo",
+      subtitle: "Tres tipos de problemas que sé resolver de punta a punta.",
     },
     about: {
       title: "Sobre mí",
@@ -30,13 +36,16 @@ export const translations = {
       details: "Detalles",
       close: "Cerrar",
     },
+    howIWork: {
+      title: "Cómo trabajo",
+    },
     skills: {
       title: "Skills",
       subtitle: "Tecnologías y herramientas con las que trabajo a diario.",
     },
     contact: {
       title: "Contacto",
-      subtitle: "¿Tienes un proyecto en mente? Escríbeme.",
+      subtitle: "¿Tienes un producto o sistema en la cabeza? Cuéntamelo — respondo en 24–48 horas.",
       nameLabel: "Nombre",
       emailLabel: "Email",
       messageLabel: "Mensaje",
@@ -59,12 +68,17 @@ export const translations = {
       closeMenu: "Cerrar menú",
       goTo: "Ir a",
     },
+    easterEgg: {
+      dismiss: "Cerrar",
+    },
   },
   en: {
     nav: {
       home: "Home",
+      whatIBuild: "What I build",
       about: "About me",
       projects: "Projects",
+      howIWork: "How I work",
       skills: "Skills",
       contact: "Contact me",
     },
@@ -72,6 +86,10 @@ export const translations = {
       hi: "Hi, I'm",
       contactMe: "Contact me",
       downloadCv: "Download CV",
+    },
+    whatIBuild: {
+      title: "What I build",
+      subtitle: "Three kinds of problems I solve end to end.",
     },
     about: {
       title: "About me",
@@ -86,13 +104,16 @@ export const translations = {
       details: "Details",
       close: "Close",
     },
+    howIWork: {
+      title: "How I work",
+    },
     skills: {
       title: "Skills",
       subtitle: "Technologies and tools I work with every day.",
     },
     contact: {
       title: "Contact me",
-      subtitle: "Have a project in mind? Get in touch.",
+      subtitle: "Got a product or system in mind? Tell me about it — I reply within 24–48 hours.",
       nameLabel: "Name",
       emailLabel: "Email",
       messageLabel: "Message",
@@ -114,6 +135,9 @@ export const translations = {
       openMenu: "Open menu",
       closeMenu: "Close menu",
       goTo: "Go to",
+    },
+    easterEgg: {
+      dismiss: "Close",
     },
   },
 };
