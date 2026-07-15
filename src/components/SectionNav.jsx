@@ -3,8 +3,9 @@ import { motion } from "framer-motion";
 import { navLinks } from "../data/mockData";
 import { getTranslation } from "../data/translations";
 import { useLanguage } from "../contexts/LanguageContext";
+import { scrollToSection } from "../lib/smoothScroll";
 
-const sectionIds = ["hero", "about", "projects", "skills", "contact"];
+const sectionIds = ["hero", "what-i-build", "projects", "how-i-work", "about", "skills", "contact"];
 const sections = navLinks;
 
 const DOT_GAP = 28;
@@ -37,7 +38,7 @@ function SectionNav() {
 
   const handleClick = (e, href) => {
     e.preventDefault();
-    document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
+    scrollToSection(href);
   };
 
   const fillHeight = activeIndex * DOT_GAP + DOT_GAP / 2;

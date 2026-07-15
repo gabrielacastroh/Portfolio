@@ -4,6 +4,7 @@ import { navLinks } from "../data/mockData";
 import { getTranslation } from "../data/translations";
 import { useLanguage } from "../contexts/LanguageContext";
 import { useTheme } from "../contexts/ThemeContext";
+import { scrollToSection } from "../lib/smoothScroll";
 
 function Navbar() {
   const { language, setLanguage } = useLanguage();
@@ -22,8 +23,7 @@ function Navbar() {
 
   const handleNavClick = (e, href) => {
     e.preventDefault();
-    const el = document.querySelector(href);
-    if (el) el.scrollIntoView({ behavior: "smooth" });
+    scrollToSection(href);
     setMobileOpen(false);
   };
 
@@ -58,7 +58,7 @@ function Navbar() {
                 <a
                   href={link.href}
                   onClick={(e) => handleNavClick(e, link.href)}
-                  className="text-sm font-medium transition-colors hover:opacity-100"
+                  className="nav-link-underline text-sm font-medium transition-colors hover:opacity-100"
                   style={{ color: "var(--text-muted)" }}
                 >
                   {navLabel(link)}
@@ -69,7 +69,7 @@ function Navbar() {
           <div className="flex items-center gap-3">
             <button
               type="button"
-              onClick={toggleTheme}
+              onClick={(e) => toggleTheme(e)}
               className="p-2 rounded-lg transition-opacity hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
               style={{ color: "var(--text-primary)" }}
               aria-label={theme === "dark" ? "Modo claro" : "Modo oscuro"}
@@ -112,7 +112,7 @@ function Navbar() {
         <div className="md:hidden flex items-center gap-2">
           <button
             type="button"
-            onClick={toggleTheme}
+            onClick={(e) => toggleTheme(e)}
             className="p-2 rounded-lg transition-opacity hover:opacity-80"
             style={{ color: "var(--text-primary)" }}
             aria-label={theme === "dark" ? "Modo claro" : "Modo oscuro"}

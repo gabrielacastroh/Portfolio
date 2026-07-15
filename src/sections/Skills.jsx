@@ -3,78 +3,12 @@ import { useRef, useState } from "react";
 import { skillCategories } from "../data/mockData";
 import { getTranslation } from "../data/translations";
 import { useLanguage } from "../contexts/LanguageContext";
+import TitleReveal from "../components/TitleReveal";
+import { fadeUp, staggerContainer } from "../lib/motion";
+import { resolveSkillIconSrc, getFallbackIconUrl } from "../lib/skillIcons";
 
-const SKILL_COLORS = {
-  react: "61DAFB",
-  javascript: "F7DF1E",
-  typescript: "3178C6",
-  tailwindcss: "06B6D4",
-  nextdotjs: "9CA3AF",
-  mui: "007FFF",
-  fastapi: "009688",
-  django: "2BA977",
-  flask: "AAAAAA",
-  graphql: "E10098",
-  swagger: "85EA2D",
-  jsonwebtokens: "D63AFF",
-  openid: "F78C40",
-  zustand: "443C55",
-  redux: "764ABC",
-  reactquery: "FF4154",
-  postgresql: "4169E1",
-  microsoftsqlserver: "CC2927",
-  docker: "2496ED",
-  amazonaws: "FF9900",
-  linux: "FCC624",
-  git: "F05032",
-  playwright: "2EAD33",
-  axecore: "663399",
-  openai: "9CA3AF",
-  groq: "F55036",
-  flutter: "02569B",
-  dart: "0175C2",
-  codepen: "9CA3AF",
-};
-
-/** Slugs fuera del CDN oficial de Simple Icons o sin icono allí → URL fija (Iconify / jsDelivr). */
-const ICON_SOURCE_OVERRIDES = {
-  // CDN simpleicons.org sin estos assets → mismo paquete en jsDelivr.
-  playwright: "https://cdn.jsdelivr.net/npm/simple-icons@11/icons/playwright.svg",
-  microsoftsqlserver:
-    "https://cdn.jsdelivr.net/npm/simple-icons@11/icons/microsoftsqlserver.svg",
-  amazonaws: "https://cdn.jsdelivr.net/npm/simple-icons@11/icons/amazonaws.svg",
-  openai: "https://cdn.jsdelivr.net/npm/simple-icons@11/icons/openai.svg",
-  // Sin entrada en Simple Icons CDN (o 404 estable).
-  zustand: "https://api.iconify.design/devicon-plain:zustand.svg",
-  groq: "https://api.iconify.design/bxl:groq-ai.svg",
-  axecore: "https://api.iconify.design/mdi:accessibility.svg",
-};
-
-/** URL de respaldo si la imagen falla al cargar. */
-function getFallbackIconUrl() {
-  const hex = SKILL_COLORS.codepen;
-  return `https://cdn.simpleicons.org/codepen/${hex}`;
-}
-
-function resolveSkillIconSrc(slug) {
-  const override = ICON_SOURCE_OVERRIDES[slug];
-  if (override) return override;
-  const hex = SKILL_COLORS[slug] ?? "6B7280";
-  return `https://cdn.simpleicons.org/${slug}/${hex}`;
-}
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: { staggerChildren: 0.07, delayChildren: 0.1 },
-  },
-};
-
-const categoryVariants = {
-  hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.4 } },
-};
+const containerVariants = staggerContainer({ stagger: 0.07, delayChildren: 0.1 });
+const categoryVariants = fadeUp;
 
 const skillVariants = {
   hidden: { opacity: 0, scale: 0.95 },
@@ -85,12 +19,15 @@ function SkillBadge({ skill }) {
   const iconSlug = skill.icon || "codepen";
   const primarySrc = resolveSkillIconSrc(iconSlug);
   const [iconSrc, setIconSrc] = useState(primarySrc);
+  const [iconLoaded, setIconLoaded] = useState(false);
   const triedFallback = useRef(false);
 
   return (
     <motion.div
       variants={skillVariants}
-      className="group/skill flex items-center gap-2 rounded-xl border px-2.5 py-2 transition-all duration-200 hover:border-opacity-60"
+      whileHover={{ y: -2 }}
+      transition={{ duration: 0.2 }}
+      className="group/skill flex items-center gap-2 rounded-xl border px-2.5 py-2 transition-colors duration-200 hover:border-[color:var(--accent)]"
       style={{
         borderColor: "var(--border)",
         backgroundColor: "var(--bg-card)",
@@ -101,13 +38,16 @@ function SkillBadge({ skill }) {
         <img
           src={iconSrc}
           alt=""
-          className="h-4 w-4 object-contain"
+          className="h-4 w-4 object-contain transition-opacity duration-300 ease-out"
+          style={{ opacity: iconLoaded ? 1 : 0 }}
           width={16}
           height={16}
           loading="lazy"
+          onLoad={() => setIconLoaded(true)}
           onError={() => {
             if (triedFallback.current) return;
             triedFallback.current = true;
+            setIconLoaded(false);
             setIconSrc(getFallbackIconUrl());
           }}
         />
@@ -137,13 +77,11 @@ function SkillCategory({ category, language }) {
       >
         {label}
       </span>
-      <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, margin: "-20px" }}
-        className="grid grid-cols-2 gap-2"
-      >
+      {/* No independent whileInView here — this grid inherits its parent
+          SkillCategory's animate state (hidden/show) so both levels of the
+          reveal cascade run off a single viewport trigger instead of two
+          separate ones. */}
+      <motion.div variants={containerVariants} className="grid grid-cols-2 gap-2">
         {category.skills.map((skill) => (
           <SkillBadge key={skill.name} skill={skill} />
         ))}
@@ -169,12 +107,14 @@ function Skills() {
           transition={{ duration: 0.5 }}
           className="mb-8 sm:mb-12 text-center"
         >
-          <h2
+          <TitleReveal
+            as="h2"
+            text={t("skills.title")}
             className="font-display font-bold text-2xl sm:text-3xl md:text-4xl"
             style={{ color: "var(--text-primary)" }}
-          >
-            {t("skills.title")}
-          </h2>
+            withDivider
+            dividerClassName="mx-auto"
+          />
           <p className="mt-2 text-theme-muted-2 text-sm sm:text-base max-w-md mx-auto">
             {t("skills.subtitle")}
           </p>

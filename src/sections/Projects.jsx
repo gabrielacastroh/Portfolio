@@ -1,43 +1,129 @@
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useRef, useState } from "react";
+import { motion, AnimatePresence, useMotionValue, useSpring, useTransform, useReducedMotion } from "framer-motion";
 import { projects } from "../data/mockData";
 import { getTranslation } from "../data/translations";
 import { useLanguage } from "../contexts/LanguageContext";
 import ProjectModal from "../components/ProjectModal";
+import TitleReveal from "../components/TitleReveal";
+import Watermark from "../components/Watermark";
+import { fadeUp, staggerContainer } from "../lib/motion";
 
-const container = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1, delayChildren: 0.2 },
-  },
-};
+const container = staggerContainer({ stagger: 0.1, delayChildren: 0.2 });
+const card = fadeUp;
 
-const card = {
-  hidden: { opacity: 0, y: 32 },
-  show: { opacity: 1, y: 0 },
-};
+const TILT_MAX_DEG = 3.5;
+const TILT_SPRING = { stiffness: 220, damping: 20, mass: 0.4 };
 
 function ProjectCard({ project, index, t, language, onSelect }) {
   const isEn = language === "en";
   const title = isEn && project.titleEn ? project.titleEn : project.title;
   const description = isEn && project.descriptionEn ? project.descriptionEn : project.description;
+  const typeLabel = isEn && project.typeLabelEn ? project.typeLabelEn : project.typeLabel;
+  const isClientProject = project.type === "client";
   const tech = project.tech ?? [];
   const repoUrl = project.repo;
   const demoUrl = project.demo;
   const image = project.image;
+  const previewVideo = project.previewVideo;
+
+  const prefersReducedMotion = useReducedMotion();
+  const videoRef = useRef(null);
+  const cardRef = useRef(null);
+  const [isPreviewing, setIsPreviewing] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
+
+  // 3D tilt + cursor-tracked inner highlight — element-relative motion values,
+  // no per-frame setState. Reduced motion / touch: springs stay at rest and
+  // the highlight never becomes visible (opacity driven purely by CSS hover).
+  const rotateX = useMotionValue(0);
+  const rotateY = useMotionValue(0);
+  const springRotateX = useSpring(rotateX, TILT_SPRING);
+  const springRotateY = useSpring(rotateY, TILT_SPRING);
+  const glowX = useMotionValue(50);
+  const glowY = useMotionValue(50);
+  const glowXPercent = useTransform(glowX, (v) => `${v}%`);
+  const glowYPercent = useTransform(glowY, (v) => `${v}%`);
+
+  const canTilt = () =>
+    !prefersReducedMotion &&
+    typeof window !== "undefined" &&
+    window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+  const handleCardMouseMove = (e) => {
+    if (!canTilt()) return;
+    const el = cardRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const px = (e.clientX - rect.left) / rect.width;
+    const py = (e.clientY - rect.top) / rect.height;
+    rotateY.set((px - 0.5) * 2 * TILT_MAX_DEG);
+    rotateX.set(-(py - 0.5) * 2 * TILT_MAX_DEG);
+    glowX.set(px * 100);
+    glowY.set(py * 100);
+  };
+
+  const handleCardMouseLeave = () => {
+    rotateX.set(0);
+    rotateY.set(0);
+  };
+
+  const canHoverPreview = () =>
+    previewVideo &&
+    !prefersReducedMotion &&
+    typeof window !== "undefined" &&
+    window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+  const handleMouseEnter = () => {
+    if (!canHoverPreview()) return;
+    const video = videoRef.current;
+    if (!video) return;
+    if (!video.src) video.src = previewVideo;
+    video.currentTime = 0;
+    video.play().catch(() => {});
+    setIsPreviewing(true);
+  };
+
+  const handleMouseLeave = () => {
+    if (!previewVideo) return;
+    setIsPreviewing(false);
+    const video = videoRef.current;
+    if (video) {
+      video.pause();
+      video.currentTime = 0;
+    }
+  };
 
   return (
     <motion.article
+      ref={cardRef}
       variants={card}
       onClick={() => onSelect(project)}
+      onMouseEnter={handleMouseEnter}
+      onMouseMove={handleCardMouseMove}
+      onMouseLeave={() => {
+        handleMouseLeave();
+        handleCardMouseLeave();
+      }}
+      style={{
+        borderColor: "var(--border)",
+        rotateX: springRotateX,
+        rotateY: springRotateY,
+        transformPerspective: 1000,
+        "--mx": glowXPercent,
+        "--my": glowYPercent,
+      }}
       className="group relative flex flex-col h-full rounded-2xl border bg-theme-card overflow-hidden backdrop-blur-sm transition-all duration-300 hover:opacity-95 cursor-pointer"
-      style={{ borderColor: "var(--border)" }}
     >
       {/* Imagen: 16:9 fija arriba */}
-      <div className="w-full aspect-video shrink-0 rounded-t-2xl overflow-hidden bg-theme-base">
+      <div className="relative w-full aspect-video shrink-0 rounded-t-2xl overflow-hidden bg-theme-base">
         {image ? (
-          <img src={image} alt="" className="w-full h-full object-cover" />
+          <img
+            src={image}
+            alt=""
+            onLoad={() => setImageLoaded(true)}
+            className="w-full h-full object-cover transition-[opacity,transform] duration-500 ease-out group-hover:scale-[1.04]"
+            style={{ opacity: imageLoaded ? 1 : 0 }}
+          />
         ) : (
           <div
             className="w-full h-full flex items-center justify-center"
@@ -49,12 +135,36 @@ function ProjectCard({ project, index, t, language, onSelect }) {
             </span>
           </div>
         )}
+        {previewVideo && (
+          <video
+            ref={videoRef}
+            muted
+            loop
+            playsInline
+            preload="none"
+            aria-hidden
+            className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300"
+            style={{ opacity: isPreviewing ? 1 : 0 }}
+          />
+        )}
+        {typeLabel && (
+          <span
+            className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[0.65rem] font-semibold uppercase tracking-wide backdrop-blur-sm transition-transform duration-300 ease-out group-hover:-translate-y-0.5"
+            style={
+              isClientProject
+                ? { backgroundColor: "var(--accent)", color: "#fff" }
+                : { backgroundColor: "rgba(0,0,0,0.55)", color: "#fff" }
+            }
+          >
+            {typeLabel}
+          </span>
+        )}
       </div>
 
       {/* Contenido */}
       <div className="flex flex-col flex-1 min-h-0 p-4 sm:p-5 md:p-6">
         <h3
-          className="font-display font-bold text-base sm:text-lg mb-2 line-clamp-2 transition-colors group-hover:opacity-80"
+          className="font-display font-bold text-base sm:text-lg mb-2 line-clamp-2 transition-all duration-300 ease-out group-hover:opacity-80 group-hover:-translate-y-0.5"
           style={{ color: "var(--text-primary)" }}
           title={title}
         >
@@ -72,7 +182,7 @@ function ProjectCard({ project, index, t, language, onSelect }) {
           {tech.map((item) => (
             <span
               key={item}
-              className="px-2.5 py-1 text-xs font-medium rounded-lg bg-theme-card border border-theme"
+              className="hover-lift px-2.5 py-1 text-xs font-medium rounded-lg bg-theme-card border border-theme"
               style={{ color: "var(--text-muted)" }}
             >
               {item}
@@ -92,9 +202,9 @@ function ProjectCard({ project, index, t, language, onSelect }) {
               href={repoUrl}
               target="_blank"
               rel="noopener noreferrer"
-              whileHover={{ scale: 1.02 }}
+              whileHover={{ scale: 1.02, y: -2 }}
               whileTap={{ scale: 0.98 }}
-              className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium border transition-all hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/50"
+              className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium border transition-all hover:opacity-90 hover:border-[color:var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/50"
               style={{
                 borderColor: "var(--border)",
                 backgroundColor: "var(--bg-card)",
@@ -112,7 +222,7 @@ function ProjectCard({ project, index, t, language, onSelect }) {
               href={demoUrl}
               target="_blank"
               rel="noopener noreferrer"
-              whileHover={{ scale: 1.02 }}
+              whileHover={{ scale: 1.02, y: -2 }}
               whileTap={{ scale: 0.98 }}
               className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium text-white transition-all focus:outline-none focus:ring-2 focus:ring-white/30 shadow-lg"
               style={{
@@ -130,6 +240,15 @@ function ProjectCard({ project, index, t, language, onSelect }) {
       </div>
 
       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none bg-gradient-to-br from-[#a78bfa]/5 to-transparent" />
+      {/* Cursor-tracked inner highlight — position driven by --mx/--my custom
+          properties, updated from motion values (no per-frame setState). */}
+      <div
+        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+        style={{
+          background: "radial-gradient(circle at var(--mx) var(--my), rgba(167, 139, 250, 0.18), transparent 60%)",
+        }}
+        aria-hidden
+      />
     </motion.article>
   );
 }
@@ -143,8 +262,9 @@ function Projects() {
     <>
       <section
         id="projects"
-        className="relative min-h-screen min-h-[100dvh] flex flex-col justify-center px-4 sm:px-6 py-16 sm:py-24 border-t border-theme-subtle"
+        className="relative min-h-screen min-h-[100dvh] flex flex-col justify-center px-4 sm:px-6 py-16 sm:py-24 border-t border-theme-subtle overflow-hidden"
       >
+        <Watermark text="SYSTEMS" className="left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
         <div className="max-w-6xl mx-auto w-full">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -153,9 +273,13 @@ function Projects() {
             transition={{ duration: 0.5 }}
             className="mb-8 sm:mb-12 md:mb-16"
           >
-            <h2 className="font-display font-bold text-2xl sm:text-3xl md:text-4xl" style={{ color: "var(--text-primary)" }}>
-              {t("projects.title")}
-            </h2>
+            <TitleReveal
+              as="h2"
+              text={t("projects.title")}
+              className="font-display font-bold text-2xl sm:text-3xl md:text-4xl"
+              style={{ color: "var(--text-primary)" }}
+              withDivider
+            />
             <p className="mt-2 text-theme-muted-2 text-sm sm:text-base max-w-xl">
               {t("projects.subtitle")}
             </p>

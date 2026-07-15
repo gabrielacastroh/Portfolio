@@ -1,26 +1,78 @@
-import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import { personal, contact } from "../data/mockData";
 import { getTranslation } from "../data/translations";
 import { useLanguage } from "../contexts/LanguageContext";
+import Magnetic from "../components/Magnetic";
+import FloatingShape from "../components/FloatingShape";
+import { EASE, fadeUp, staggerContainer } from "../lib/motion";
+import { scrollToSection } from "../lib/smoothScroll";
 
-const container = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: { staggerChildren: 0.12, delayChildren: 0.2 },
-  },
-};
+const container = staggerContainer({ stagger: 0.12, delayChildren: 0.2 });
+const item = fadeUp;
 
-const item = {
-  hidden: { opacity: 0, y: 24 },
-  show: { opacity: 1, y: 0 },
-};
+const ROTATE_INTERVAL_MS = 2500;
+
+function RotatingBuild({ prefix, words }) {
+  const prefersReducedMotion = useReducedMotion();
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    if (prefersReducedMotion || words.length < 2) return undefined;
+    const id = setInterval(() => {
+      setIndex((i) => (i + 1) % words.length);
+    }, ROTATE_INTERVAL_MS);
+    return () => clearInterval(id);
+  }, [prefersReducedMotion, words]);
+
+  if (!words || words.length === 0) return null;
+
+  if (prefersReducedMotion) {
+    return (
+      <motion.p variants={item} className="text-sm sm:text-base text-theme-muted-2 mb-4 sm:mb-6">
+        {prefix} <span style={{ color: "var(--accent)" }}>{words.join(" · ")}</span>
+      </motion.p>
+    );
+  }
+
+  return (
+    <motion.p variants={item} className="text-sm sm:text-base text-theme-muted-2 mb-4 sm:mb-6 flex items-center justify-center gap-1.5 flex-wrap">
+      <span>{prefix}</span>
+      {/* Grid-stack: every word occupies the same cell (grid-area 1/1), so the
+          cell auto-sizes to the widest word and never changes width. All
+          words stay mounted; only the active one is visible (opacity/y
+          animated), avoiding mount/unmount so the prefix never shifts. */}
+      <span className="grid font-medium" style={{ color: "var(--accent)" }}>
+        {words.map((word, i) => {
+          const isActive = i === index;
+          return (
+            <motion.span
+              key={word}
+              animate={{ opacity: isActive ? 1 : 0, y: isActive ? 0 : 8 }}
+              transition={{ duration: 0.35, ease: EASE }}
+              style={{ gridArea: "1 / 1" }}
+              aria-hidden={!isActive}
+              className={isActive ? undefined : "pointer-events-none"}
+            >
+              {word}
+            </motion.span>
+          );
+        })}
+      </span>
+    </motion.p>
+  );
+}
 
 function Hero() {
   const { language } = useLanguage();
   const t = (key) => getTranslation(language, key);
-  const tagline = language === "en" && personal.taglineEn ? personal.taglineEn : personal.tagline;
-  const cvUrl = language === "en" ? contact.cvUrlEn : contact.cvUrlEs;
+  const isEn = language === "en";
+  const professionalTitle =
+    isEn && personal.professionalTitleEn ? personal.professionalTitleEn : personal.professionalTitle;
+  const tagline = isEn && personal.taglineEn ? personal.taglineEn : personal.tagline;
+  const cvUrl = isEn ? contact.cvUrlEn : contact.cvUrlEs;
+  const rotatingPrefix = isEn && personal.rotatingPrefixEn ? personal.rotatingPrefixEn : personal.rotatingPrefix;
+  const rotatingWords = isEn && personal.rotatingWordsEn ? personal.rotatingWordsEn : personal.rotatingWords;
 
   return (
     <section
@@ -28,6 +80,10 @@ function Hero() {
       className="relative min-h-screen min-h-[100dvh] flex items-center justify-center overflow-hidden w-full safe-top"
     >
       <div className="absolute bottom-0 left-0 right-0 h-px" style={{ background: "linear-gradient(to right, transparent, var(--border), transparent)" }} />
+
+      {/* Minimal decorative geometry filling the empty quadrant left by the
+          centered composition — very slow float, hidden on small screens. */}
+      <FloatingShape variant="line" className="hidden lg:block absolute left-[6%] top-[18%] -z-[1]" size={120} />
 
       <motion.div
         variants={container}
@@ -49,50 +105,57 @@ function Hero() {
           {personal.name}
         </motion.h1>
         <motion.p variants={item} className="text-lg sm:text-xl md:text-2xl text-theme-muted font-medium mb-4 sm:mb-6">
-          {personal.professionalTitle}
+          {professionalTitle}
         </motion.p>
         {tagline && (
           <motion.p variants={item} className="text-base md:text-lg text-theme-muted-2 max-w-xl mx-auto leading-relaxed">
             {tagline}
           </motion.p>
         )}
+        {rotatingWords && rotatingWords.length > 0 && (
+          <RotatingBuild prefix={rotatingPrefix} words={rotatingWords} />
+        )}
 
         <motion.div
           variants={item}
           className="mt-8 sm:mt-10 flex flex-wrap items-center justify-center gap-2 sm:gap-3"
         >
-          <a
-            href="#contact"
-            onClick={(e) => {
-              e.preventDefault();
-              document.querySelector("#contact")?.scrollIntoView({ behavior: "smooth" });
-            }}
-            className="inline-flex items-center gap-2 px-3 sm:px-4 py-2.5 rounded-lg border bg-theme-card text-xs sm:text-sm font-medium focus:outline-none focus:ring-2 transition-colors min-h-[44px]"
-            style={{ borderColor: "var(--border)", color: "var(--text-primary)" }}
-          >
-            <span aria-hidden>@</span>
-            {t("hero.contactMe")}
-          </a>
-          {cvUrl && (
+          <Magnetic>
             <a
-              href={cvUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-3 sm:px-4 py-2.5 rounded-lg border bg-theme-card text-xs sm:text-sm font-medium focus:outline-none focus:ring-2 transition-colors min-h-[44px] items-center"
+              href="#contact"
+              onClick={(e) => {
+                e.preventDefault();
+                scrollToSection("#contact");
+              }}
+              className="hover-lift inline-flex items-center gap-2 px-3 sm:px-4 py-2.5 rounded-lg border bg-theme-card text-xs sm:text-sm font-medium focus:outline-none focus:ring-2 min-h-[44px]"
               style={{ borderColor: "var(--border)", color: "var(--text-primary)" }}
             >
-              <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-              </svg>
-              {t("hero.downloadCv")}
+              <span aria-hidden>@</span>
+              {t("hero.contactMe")}
             </a>
+          </Magnetic>
+          {cvUrl && (
+            <Magnetic>
+              <a
+                href={cvUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover-lift inline-flex items-center gap-2 px-3 sm:px-4 py-2.5 rounded-lg border bg-theme-card text-xs sm:text-sm font-medium focus:outline-none focus:ring-2 min-h-[44px] items-center"
+                style={{ borderColor: "var(--border)", color: "var(--text-primary)" }}
+              >
+                <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                {t("hero.downloadCv")}
+              </a>
+            </Magnetic>
           )}
           <span className="w-px h-6 opacity-30" style={{ backgroundColor: "var(--border)" }} aria-hidden />
           <a
             href={contact.github}
             target="_blank"
             rel="noopener noreferrer"
-            className="p-2.5 rounded-lg border bg-theme-card focus:outline-none focus:ring-2 transition-colors hover:opacity-90 min-w-[44px] min-h-[44px] flex items-center justify-center"
+            className="hover-lift p-2.5 rounded-lg border bg-theme-card focus:outline-none focus:ring-2 hover:opacity-90 min-w-[44px] min-h-[44px] flex items-center justify-center"
             style={{ borderColor: "var(--border)", color: "var(--text-muted)" }}
             aria-label="GitHub"
           >
@@ -104,7 +167,7 @@ function Hero() {
             href={contact.linkedin}
             target="_blank"
             rel="noopener noreferrer"
-            className="p-2.5 rounded-lg border bg-theme-card focus:outline-none focus:ring-2 transition-colors hover:opacity-90 min-w-[44px] min-h-[44px] flex items-center justify-center"
+            className="hover-lift p-2.5 rounded-lg border bg-theme-card focus:outline-none focus:ring-2 hover:opacity-90 min-w-[44px] min-h-[44px] flex items-center justify-center"
             style={{ borderColor: "var(--border)", color: "var(--text-muted)" }}
             aria-label="LinkedIn"
           >
