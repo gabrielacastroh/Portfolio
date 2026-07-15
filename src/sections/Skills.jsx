@@ -42,7 +42,6 @@ function SkillBadge({ skill }) {
           style={{ opacity: iconLoaded ? 1 : 0 }}
           width={16}
           height={16}
-          loading="lazy"
           onLoad={() => setIconLoaded(true)}
           onError={() => {
             if (triedFallback.current) return;

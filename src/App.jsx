@@ -12,9 +12,14 @@ import HowIWork from "./sections/HowIWork";
 import Skills from "./sections/Skills";
 import Contact from "./sections/Contact";
 import { useSmoothScroll } from "./lib/smoothScroll";
+import { preloadRemoteAssets } from "./lib/preloadAssets";
+import { useEffect } from "react";
 
 function App() {
   useSmoothScroll();
+  useEffect(() => {
+    preloadRemoteAssets();
+  }, []);
 
   return (
     <div
