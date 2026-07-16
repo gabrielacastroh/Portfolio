@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { motion, useMotionValue, useSpring, useReducedMotion } from "framer-motion";
-import { usePointer } from "../lib/pointer";
+import { hasFinePointer, usePointer } from "../lib/pointer";
 
 const ROTATION_SECONDS = 40;
 const PARALLAX_MAX = 10;
@@ -26,8 +26,7 @@ function OrbitalText({ text, size = 220, direction = 1, className = "", textColo
   const springY = useSpring(localY, PARALLAX_SPRING);
 
   useEffect(() => {
-    if (prefersReducedMotion || typeof window === "undefined") return undefined;
-    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return undefined;
+    if (prefersReducedMotion || !hasFinePointer()) return undefined;
 
     const updateFromPointer = () => {
       const el = wrapperRef.current;
@@ -41,13 +40,13 @@ function OrbitalText({ text, size = 220, direction = 1, className = "", textColo
       localY.set(Math.max(Math.min(offsetY, PARALLAX_MAX), -PARALLAX_MAX));
     };
 
-    const unsubX = pointer.x.on("change", updateFromPointer);
-    const unsubY = pointer.y.on("change", updateFromPointer);
-
-    return () => {
-      unsubX();
-      unsubY();
-    };
+    // Subscribe to `y` ONLY. pointer.js sets x then y per pointermove and
+    // MotionValue.set() notifies subscribers synchronously, so by the time y
+    // fires both values already hold the current sample — one complete,
+    // deduplicated read per event. Subscribing to both would run this handler
+    // twice with identical input, doubling the getBoundingClientRect() above
+    // (a forced layout) for no gain.
+    return pointer.y.on("change", updateFromPointer);
   }, [pointer, prefersReducedMotion, localX, localY]);
 
   const radius = size / 2 - 14;

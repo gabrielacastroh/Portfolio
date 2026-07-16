@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import { motion, useMotionValue, useSpring, useReducedMotion } from "framer-motion";
+import { hasFinePointer } from "../lib/pointer";
 
 const MAX_OFFSET = 8;
 const SPRING = { stiffness: 200, damping: 15, mass: 0.3 };
@@ -23,7 +24,7 @@ function Magnetic({ children, className }) {
   }
 
   const handleMouseMove = (e) => {
-    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    if (!hasFinePointer()) return;
     const el = ref.current;
     if (!el) return;
     const rect = el.getBoundingClientRect();

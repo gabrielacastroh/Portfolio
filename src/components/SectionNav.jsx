@@ -11,6 +11,22 @@ const sections = navLinks;
 const DOT_GAP = 28;
 const TRACK_LEFT = 5;
 
+// Every dot renders at DOT_SIZE and is scaled down when inactive. Sizing them
+// per-state would change each <a>'s height and shift every dot below it, so the
+// box stays fixed and only the transform varies.
+const DOT_SIZE = 10;
+const DOT_INACTIVE_SCALE = 0.6;
+
+// border-box means the border eats into DOT_SIZE rather than growing the box, and
+// the transform shrinks the border along with everything else. Pre-dividing by the
+// inactive scale makes the ring land on its intended 1.5px once scaled down.
+const DOT_BORDER_WIDTH = 1.5 / DOT_INACTIVE_SCALE;
+
+// The fill bar's maximum extent: the last dot's centre plus the half-gap the
+// design carries past it. The bar is always rendered this tall and scaled from the
+// top, so this is the denominator every fill fraction is measured against.
+const TRACK_HEIGHT = (sectionIds.length - 1) * DOT_GAP + DOT_GAP / 2;
+
 function SectionNav() {
   const { language } = useLanguage();
   const [activeId, setActiveId] = useState("hero");
@@ -41,7 +57,11 @@ function SectionNav() {
     scrollToSection(href);
   };
 
-  const fillHeight = activeIndex * DOT_GAP + DOT_GAP / 2;
+  // indexOf returns -1 for an activeId outside sectionIds, which would drive the
+  // fill to a negative scale. Clamp before it reaches the transform.
+  const fillIndex = Math.max(activeIndex, 0);
+  const fillHeight = fillIndex * DOT_GAP + DOT_GAP / 2;
+  const fillScaleY = TRACK_HEIGHT > 0 ? Math.min(fillHeight / TRACK_HEIGHT, 1) : 0;
 
   return (
     <nav
@@ -62,13 +82,20 @@ function SectionNav() {
         aria-hidden
       />
 
+      {/* The bar is held at its full height and revealed with scaleY rather than
+          animated on height: height is a layout property, and framer only animates
+          what it is given as a target, so a height driven from style would snap and
+          reflow on every IntersectionObserver update mid-scroll. scaleY is a
+          compositor transform, so the spring below actually has something to run on. */}
       <motion.div
         className="absolute left-0 rounded-full"
+        initial={false}
+        animate={{ scaleY: fillScaleY }}
         transition={{ type: "spring", stiffness: 120, damping: 24 }}
         style={{
           top: DOT_GAP / 2,
           width: 1,
-          height: fillHeight,
+          height: TRACK_HEIGHT,
           background: "linear-gradient(to bottom, var(--accent), rgba(167, 139, 250, 0.5))",
           transformOrigin: "top",
         }}
@@ -88,15 +115,25 @@ function SectionNav() {
               aria-current={isActive ? "section" : undefined}
               aria-label={`${getTranslation(language, "a11y.goTo")} ${sectionLabel(section)}`}
             >
+              {/* scale, not width/height. Two reasons: (1) width/height are layout
+                  properties, so resizing the active dot changes its <a>'s height and
+                  shifts every dot below it — and activeId comes from an
+                  IntersectionObserver, so that reflow lands mid-scroll; (2) framer only
+                  corrects the border-radius distortion of a layout animation when it
+                  owns borderRadius, which a `rounded-full` class hides from it, so the
+                  dot stretched into an ellipse on the way. borderRadius lives in style
+                  here for the same reason. */}
               <motion.span
-                layout
+                initial={false}
+                animate={{ scale: isActive ? 1 : DOT_INACTIVE_SCALE }}
                 transition={{ type: "spring", stiffness: 400, damping: 28 }}
-                className="relative z-10 shrink-0 rounded-full"
+                className="relative z-10 shrink-0"
                 style={{
-                  width: isActive ? 10 : 6,
-                  height: isActive ? 10 : 6,
+                  width: DOT_SIZE,
+                  height: DOT_SIZE,
+                  borderRadius: "50%",
                   marginLeft: -TRACK_LEFT,
-                  border: isActive ? "none" : "1.5px solid var(--line-muted)",
+                  border: isActive ? "none" : `${DOT_BORDER_WIDTH}px solid var(--line-muted)`,
                   backgroundColor: isActive ? "var(--accent)" : "transparent",
                   boxShadow: isActive
                     ? "0 0 0 3px rgba(167, 139, 250, 0.25), 0 0 12px rgba(167, 139, 250, 0.4)"

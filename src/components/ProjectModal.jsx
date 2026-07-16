@@ -44,7 +44,7 @@ function Gallery({ screenshots }) {
             <button
               key={i}
               onClick={() => setActive(i)}
-              className="shrink-0 w-24 aspect-video rounded-lg overflow-hidden transition-all duration-200"
+              className="shrink-0 w-24 aspect-video rounded-lg overflow-hidden transition-[border-color,opacity] duration-200"
               style={{
                 border: `2px solid ${i === active ? "var(--accent)" : "var(--border)"}`,
                 opacity: i === active ? 1 : 0.45,
@@ -76,17 +76,18 @@ const fadeUp = {
 function ProjectModal({ project, onClose, t, language }) {
   const isEn = language === "en";
 
-  // ESC to close + lock body scroll
+  // ESC to close. Page scroll is held by the overlay itself, not by a body
+  // overflow lock: `body { overflow: hidden }` is inert here because
+  // index.css sets `html { overflow-x: hidden }`, so the root already supplies
+  // the viewport's overflow and body is never consulted for it. The overlay
+  // covers the viewport and carries data-lenis-prevent + overscroll-contain,
+  // which keeps every wheel/touch gesture inside it — see the className below.
   useEffect(() => {
     const handler = (e) => {
       if (e.key === "Escape") onClose();
     };
     document.addEventListener("keydown", handler);
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", handler);
-      document.body.style.overflow = "";
-    };
+    return () => document.removeEventListener("keydown", handler);
   }, [onClose]);
 
   const title = isEn && project.titleEn ? project.titleEn : project.title;
@@ -105,7 +106,14 @@ function ProjectModal({ project, onClose, t, language }) {
 
   return (
     <motion.div
-      className="fixed inset-0 z-50 overflow-y-auto"
+      // data-lenis-prevent: Lenis captures wheel/touch globally and applies it
+      // to the page, so without this the overlay's own scroller never receives
+      // the gesture. Lenis checks this attribute before its isStopped branch and
+      // returns without preventDefault, which is what lets native scrolling run
+      // here — lenis.stop() alone would cancel the event and freeze this too.
+      // overscroll-contain stops the page from scrolling once this hits its end.
+      data-lenis-prevent
+      className="fixed inset-0 z-50 overflow-y-auto overscroll-contain"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -268,7 +276,7 @@ function ProjectModal({ project, onClose, t, language }) {
                     rel="noopener noreferrer"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium border transition-all hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/50"
+                    className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium border transition-[color,background-color,border-color,opacity] hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/50"
                     style={{
                       borderColor: "var(--border)",
                       backgroundColor: "var(--bg-card)",
@@ -292,7 +300,7 @@ function ProjectModal({ project, onClose, t, language }) {
                     rel="noopener noreferrer"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium text-white transition-all focus:outline-none focus:ring-2 focus:ring-white/30 shadow-lg"
+                    className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white/30 shadow-lg"
                     style={{
                       background:
                         "linear-gradient(135deg, #7c3aed 0%, #a78bfa 50%, #c4b5fd 100%)",

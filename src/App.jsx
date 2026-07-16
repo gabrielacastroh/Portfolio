@@ -17,8 +17,16 @@ import { useEffect } from "react";
 
 function App() {
   useSmoothScroll();
+
+  // Deferred to idle rather than fired on mount: the assets it warms up are
+  // decorative and below the fold, so they must not compete with the hero
+  // paint and the render-blocking font stylesheet for connections/bandwidth.
+  // Idle time is exactly when there is spare capacity for them.
   useEffect(() => {
-    preloadRemoteAssets();
+    const schedule = window.requestIdleCallback ?? ((cb) => setTimeout(cb, 1));
+    const cancel = window.cancelIdleCallback ?? clearTimeout;
+    const id = schedule(() => preloadRemoteAssets());
+    return () => cancel(id);
   }, []);
 
   return (

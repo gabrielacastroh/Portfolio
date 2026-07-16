@@ -55,6 +55,26 @@ export function getPointer() {
   return store;
 }
 
+let fineHover = null;
+
+/**
+ * Whether this device has a fine, hovering pointer (mouse/trackpad).
+ *
+ * Resolved once and cached: matchMedia() parses the query and allocates a new
+ * MediaQueryList on every call, and the callers are mousemove handlers running
+ * at pointer-sample rate. This is a device capability — it cannot change
+ * between two samples of the same gesture, so paying for it per event is pure
+ * GC pressure on the hottest path in the app.
+ */
+export function hasFinePointer() {
+  if (fineHover === null) {
+    fineHover =
+      typeof window !== "undefined" &&
+      window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  }
+  return fineHover;
+}
+
 /** React hook: returns the shared { x, y } pointer motion values and manages subscription lifecycle. */
 export function usePointer() {
   const pointer = getPointer();

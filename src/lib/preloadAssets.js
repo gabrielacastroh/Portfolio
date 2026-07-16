@@ -29,6 +29,11 @@ export function preloadRemoteAssets() {
   for (const url of urls) {
     const img = new Image();
     img.decoding = "async";
+    // These are decorative, below-the-fold assets. At default priority they
+    // queue alongside the hero's critical resources and the render-blocking
+    // font stylesheet; "low" keeps the warm-up from stealing bandwidth from
+    // first paint. The cache still fills long before Skills / Projects scroll in.
+    img.fetchPriority = "low";
     img.src = url;
   }
 }

@@ -26,6 +26,16 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+    <!--
+      Skill icon origins (see src/lib/skillIcons.js). All three are reached by
+      real resolved URLs: simpleicons.org is the default CDN, jsDelivr and
+      Iconify serve the ICON_SOURCE_OVERRIDES slugs. Warming the handshake here
+      saves ~3 RTTs each on cold connections when preloadAssets.js fires at idle.
+    -->
+    <link rel="preconnect" href="https://cdn.simpleicons.org" crossorigin />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <link rel="preconnect" href="https://api.iconify.design" crossorigin />
   </head>
   <body>
     <script>
