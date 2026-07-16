@@ -432,8 +432,12 @@ export const skillCategories = [
 export const contact = {
   title: "Contacto",
   titleEn: "Contact me",
-  subtitle: "¿Tienes un producto o sistema en la cabeza? Cuéntamelo — respondo en 24–48 horas.",
-  subtitleEn: "Got a product or system in mind? Tell me about it — I reply within 24–48 hours.",
+  subtitle: "¿Tienes un producto o sistema en la cabeza? Cuéntamelo.",
+  subtitleEn: "Got a product or system in mind? Tell me about it.",
+  heading: "Hablemos sobre tu próxima idea.",
+  headingEn: "Let's talk about your next idea.",
+  availabilityNote: "Abierta a colaboraciones y proyectos remotos.",
+  availabilityNoteEn: "Open to collaborations and remote projects.",
   email: "gabrielacastroh99@gmail.com",
   location: "Barranquilla, Colombia",
   locationEn: "Barranquilla, Colombia",
@@ -446,6 +450,26 @@ export const contact = {
   formSuccessMessageEn: "Message sent. I'll get back to you soon.",
   formErrorMessage: "Algo falló. Intenta de nuevo o escríbeme a mi email.",
   formErrorMessageEn: "Something went wrong. Try again or email me directly.",
+  footerTagline: "Construyo software que resuelve problemas reales.",
+  footerTaglineEn: "I build software that solves real problems.",
+  ctaHeading: "¿Listo para construir algo juntos?",
+  ctaHeadingEn: "Ready to build something together?",
+  ctaText: "Cuéntame tu idea y te respondo en 24–48 horas.",
+  ctaTextEn: "Tell me your idea and I'll reply within 24–48 hours.",
+  ctaButton: "Hablemos",
+  ctaButtonEn: "Let's talk",
+
+  closingStatement: "Construyamos algo juntos.",
+  closingStatementEn: "Let's build something together.",
+
+  orbitalClosing: "Construyamos algo juntos · Construyamos algo juntos · ",
+  orbitalClosingEn: "Let's build together · Let's build together · ",
+
+  // Echoes the "Cómo trabajo" step titles as a closing rhythm — distinct in
+  // register (process verbs, not domain nouns) from the opening Marquee's
+  // rowOne/rowTwo, and a deliberate narrative callback rather than new copy.
+  closingMarqueeWords: ["Entender el problema", "Proponer con claridad", "Construir con entregas visibles", "Entregar y acompañar"],
+  closingMarqueeWordsEn: ["Understand the problem", "Propose with clarity", "Build with visible progress", "Deliver and support"],
 };
 
 export const navLinks = [

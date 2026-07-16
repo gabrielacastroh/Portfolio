@@ -58,15 +58,36 @@ function DividerLine({ className, delay, reduced }) {
  * motion only. Optionally draws a divider line under the title once the
  * words finish revealing.
  */
-function TitleReveal({ as: tag = "h2", text, className, style, withDivider = false, dividerClassName = "" }) {
+function TitleReveal({
+  as: tag = "h2",
+  text,
+  className,
+  style,
+  withDivider = false,
+  dividerClassName = "",
+  highlightLastN = 0,
+}) {
   const prefersReducedMotion = useReducedMotion();
   const words = text.split(" ");
   const dividerDelay = words.length * WORD_STAGGER + WORD_DURATION * 0.4;
+  const accentFrom = highlightLastN > 0 ? words.length - highlightLastN : Infinity;
+  const wordStyle = (i) => (i >= accentFrom ? { color: "var(--accent)" } : undefined);
 
   if (prefersReducedMotion) {
     return (
       <>
-        {createElement(tag, { className, style }, text)}
+        {createElement(
+          tag,
+          { className, style },
+          highlightLastN > 0
+            ? words.map((w, i) => (
+                <Fragment key={`${w}-${i}`}>
+                  <span style={wordStyle(i)}>{w}</span>
+                  {i < words.length - 1 ? " " : ""}
+                </Fragment>
+              ))
+            : text
+        )}
         {withDivider && <DividerLine className={dividerClassName} reduced />}
       </>
     );
@@ -90,7 +111,7 @@ function TitleReveal({ as: tag = "h2", text, className, style, withDivider = fal
             <motion.span
               aria-hidden
               variants={wordVariants}
-              style={{ display: "inline-block" }}
+              style={{ display: "inline-block", ...wordStyle(i) }}
             >
               {w}
             </motion.span>
