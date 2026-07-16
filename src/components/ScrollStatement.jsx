@@ -1,5 +1,4 @@
 import { useRef } from "react";
-// eslint-disable-next-line no-unused-vars -- `motion` is used via JSX (<motion.span>); this ESLint config lacks eslint-plugin-react's jsx-uses-vars, same as every other file in this codebase that uses framer-motion.
 import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
 
 /**

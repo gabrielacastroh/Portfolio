@@ -4,7 +4,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { personal, contact } from "../data/mockData";
 import { getTranslation } from "../data/translations";
-import { useLanguage } from "../contexts/LanguageContext";
+import { useLanguage } from "../contexts/useLanguage";
 import Magnetic from "../components/Magnetic";
 import FloatingShape from "../components/FloatingShape";
 import { EASE, fadeUp, staggerContainer } from "../lib/motion";

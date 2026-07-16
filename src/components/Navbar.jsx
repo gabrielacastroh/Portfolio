@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { navLinks } from "../data/mockData";
 import { getTranslation } from "../data/translations";
-import { useLanguage } from "../contexts/LanguageContext";
-import { useTheme } from "../contexts/ThemeContext";
+import { useLanguage } from "../contexts/useLanguage";
+import { useTheme } from "../contexts/useTheme";
 import { scrollToSection } from "../lib/smoothScroll";
 
 function Navbar() {

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { navLinks } from "../data/mockData";
 import { getTranslation } from "../data/translations";
-import { useLanguage } from "../contexts/LanguageContext";
+import { useLanguage } from "../contexts/useLanguage";
 import { scrollToSection } from "../lib/smoothScroll";
 
 const sectionIds = ["hero", "what-i-build", "projects", "how-i-work", "about", "skills", "contact"];
@@ -76,7 +76,7 @@ function SectionNav() {
       />
 
       <div className="relative flex flex-col items-center">
-        {sections.map((section, index) => {
+        {sections.map((section) => {
           const isActive = activeId === section.id;
 
           return (

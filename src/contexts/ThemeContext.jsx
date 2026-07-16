@@ -1,11 +1,7 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import { ThemeContext } from "./themeContextValue";
 
 const STORAGE_KEY = "portfolio-theme";
-
-const ThemeContext = createContext({
-  theme: "dark",
-  setTheme: () => {},
-});
 
 export function ThemeProvider({ children }) {
   const [theme, setThemeState] = useState(() => {
@@ -56,10 +52,4 @@ export function ThemeProvider({ children }) {
       {children}
     </ThemeContext.Provider>
   );
-}
-
-export function useTheme() {
-  const ctx = useContext(ThemeContext);
-  if (!ctx) throw new Error("useTheme must be used within ThemeProvider");
-  return ctx;
 }

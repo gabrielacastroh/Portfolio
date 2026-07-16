@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-// eslint-disable-next-line no-unused-vars -- `motion` is used via JSX (<motion.div>); this ESLint config lacks eslint-plugin-react's jsx-uses-vars, same as every other file in this codebase that uses framer-motion.
 import { AnimatePresence, motion } from "framer-motion";
 import { easterEgg } from "../data/mockData";
 import { getTranslation } from "../data/translations";
-import { useLanguage } from "../contexts/LanguageContext";
+import { useLanguage } from "../contexts/useLanguage";
 
 const TRIGGER = "hola";
 const AUTO_DISMISS_MS = 8000;

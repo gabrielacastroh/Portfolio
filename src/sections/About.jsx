@@ -3,7 +3,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { about, stats } from "../data/mockData";
-import { useLanguage } from "../contexts/LanguageContext";
+import { useLanguage } from "../contexts/useLanguage";
 import TitleReveal from "../components/TitleReveal";
 import ScrollStatement from "../components/ScrollStatement";
 import OrbitalText from "../components/OrbitalText";

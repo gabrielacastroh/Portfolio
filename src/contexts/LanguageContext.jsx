@@ -1,11 +1,7 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import { LanguageContext } from "./languageContextValue";
 
 const STORAGE_KEY = "portfolio-lang";
-
-const LanguageContext = createContext({
-  language: "es",
-  setLanguage: () => {},
-});
 
 export function LanguageProvider({ children }) {
   const [language, setLanguageState] = useState(() => {
@@ -27,10 +23,4 @@ export function LanguageProvider({ children }) {
       {children}
     </LanguageContext.Provider>
   );
-}
-
-export function useLanguage() {
-  const ctx = useContext(LanguageContext);
-  if (!ctx) throw new Error("useLanguage must be used within LanguageProvider");
-  return ctx;
 }

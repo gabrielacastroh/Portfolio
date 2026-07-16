@@ -3,7 +3,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import FastMarquee from "react-fast-marquee";
 import { contact, navLinks } from "../data/mockData";
 import { getTranslation } from "../data/translations";
-import { useLanguage } from "../contexts/LanguageContext";
+import { useLanguage } from "../contexts/useLanguage";
 import TitleReveal from "../components/TitleReveal";
 import ScrollStatement from "../components/ScrollStatement";
 import OrbitalText from "../components/OrbitalText";

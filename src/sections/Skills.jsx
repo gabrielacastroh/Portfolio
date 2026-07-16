@@ -2,7 +2,7 @@ import { motion, useMotionValue, useTransform, useReducedMotion } from "framer-m
 import { useRef, useState } from "react";
 import { skillCategories } from "../data/mockData";
 import { getTranslation } from "../data/translations";
-import { useLanguage } from "../contexts/LanguageContext";
+import { useLanguage } from "../contexts/useLanguage";
 import TitleReveal from "../components/TitleReveal";
 import { fadeUp, staggerContainer } from "../lib/motion";
 import { resolveSkillIconSrc, getFallbackIconUrl } from "../lib/skillIcons";

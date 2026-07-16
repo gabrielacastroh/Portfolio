@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { whatIBuild } from "../data/mockData";
 import { getTranslation } from "../data/translations";
-import { useLanguage } from "../contexts/LanguageContext";
+import { useLanguage } from "../contexts/useLanguage";
 import TitleReveal from "../components/TitleReveal";
 import { fadeUp, staggerContainer, scaleXReveal } from "../lib/motion";
 

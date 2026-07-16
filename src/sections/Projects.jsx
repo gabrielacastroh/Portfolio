@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform, useReducedMotion } from "framer-motion";
 import { projects } from "../data/mockData";
 import { getTranslation } from "../data/translations";
-import { useLanguage } from "../contexts/LanguageContext";
+import { useLanguage } from "../contexts/useLanguage";
 import ProjectModal from "../components/ProjectModal";
 import TitleReveal from "../components/TitleReveal";
 import { fadeUp, staggerContainer } from "../lib/motion";

@@ -1,7 +1,7 @@
 import FastMarquee from "react-fast-marquee";
 import { useReducedMotion } from "framer-motion";
 import { marquee } from "../data/mockData";
-import { useLanguage } from "../contexts/LanguageContext";
+import { useLanguage } from "../contexts/useLanguage";
 
 const SEPARATOR = "·";
 

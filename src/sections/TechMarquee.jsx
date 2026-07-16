@@ -3,7 +3,7 @@ import FastMarquee from "react-fast-marquee";
 import { useReducedMotion } from "framer-motion";
 import { techMarquee } from "../data/mockData";
 import { resolveSkillIconSrc, getFallbackIconUrl } from "../lib/skillIcons";
-import { useTheme } from "../contexts/ThemeContext";
+import { useTheme } from "../contexts/useTheme";
 
 /** Theme-aware monochrome hex for the marquee logos — noticeably whiter on
  * dark so they read against the dark bg, dimmer gray on light so they don't
