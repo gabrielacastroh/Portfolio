@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { flushSync } from "react-dom";
 import { ThemeContext } from "./themeContextValue";
 
 const STORAGE_KEY = "portfolio-theme";
@@ -43,7 +44,14 @@ export function ThemeProvider({ children }) {
     document.documentElement.style.setProperty("--vt-y", `${y}px`);
 
     document.startViewTransition(() => {
-      applyToggle();
+      // flushSync is required, not defensive: startViewTransition snapshots the
+      // "new" state synchronously once this callback returns (it only awaits a
+      // returned promise, and we return none). A scheduled React update would
+      // still be pending at that point, so `data-theme` would not be on <html>
+      // yet and the circular reveal would animate the old theme into itself.
+      flushSync(() => {
+        applyToggle();
+      });
     });
   };
 
