@@ -1,15 +1,58 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { personal, contact } from "../data/mockData";
 import { getTranslation } from "../data/translations";
 import { useLanguage } from "../contexts/LanguageContext";
 import Magnetic from "../components/Magnetic";
 import FloatingShape from "../components/FloatingShape";
 import { EASE, fadeUp, staggerContainer } from "../lib/motion";
-import { scrollToSection } from "../lib/smoothScroll";
+import { scrollToSection, prefersReducedMotion } from "../lib/smoothScroll";
 
-const container = staggerContainer({ stagger: 0.12, delayChildren: 0.2 });
+const container = staggerContainer({ stagger: 0.14, delayChildren: 0.25 });
 const item = fadeUp;
+
+/**
+ * Wraps FloatingShape with a very subtle scroll-tied parallax as the user
+ * scrolls away from Hero — additive to FloatingShape's own cursor-independent
+ * float, not a replacement. Reduced motion: no scrub, shape renders static
+ * (FloatingShape itself already handles its own reduced-motion fallback).
+ */
+function ParallaxFloatingShape(props) {
+  const wrapperRef = useRef(null);
+
+  useEffect(() => {
+    const el = wrapperRef.current;
+    const section = el?.closest("section");
+    if (!el || !section || prefersReducedMotion()) return undefined;
+
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        el,
+        { yPercent: -6 },
+        {
+          yPercent: 6,
+          ease: "none",
+          scrollTrigger: {
+            trigger: section,
+            start: "top top",
+            end: "bottom top",
+            scrub: true,
+          },
+        }
+      );
+    });
+
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <div ref={wrapperRef}>
+      <FloatingShape {...props} />
+    </div>
+  );
+}
 
 const ROTATE_INTERVAL_MS = 2500;
 
@@ -83,7 +126,7 @@ function Hero() {
 
       {/* Minimal decorative geometry filling the empty quadrant left by the
           centered composition — very slow float, hidden on small screens. */}
-      <FloatingShape variant="line" className="hidden lg:block absolute left-[6%] top-[18%] -z-[1]" size={120} />
+      <ParallaxFloatingShape variant="line" className="hidden lg:block absolute left-[6%] top-[18%] -z-[1]" size={120} />
 
       <motion.div
         variants={container}

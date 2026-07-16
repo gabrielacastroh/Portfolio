@@ -1,11 +1,54 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { about, stats } from "../data/mockData";
 import { useLanguage } from "../contexts/LanguageContext";
 import TitleReveal from "../components/TitleReveal";
 import ScrollStatement from "../components/ScrollStatement";
 import OrbitalText from "../components/OrbitalText";
 import { EASE } from "../lib/motion";
+import { prefersReducedMotion } from "../lib/smoothScroll";
+
+/**
+ * Wraps OrbitalText with a very subtle scroll-position parallax, additive to
+ * OrbitalText's own cursor-driven parallax (handled internally via the
+ * shared pointer singleton). Reduced motion: no scrub, static position.
+ */
+function ParallaxOrbitalText(props) {
+  const wrapperRef = useRef(null);
+
+  useEffect(() => {
+    const el = wrapperRef.current;
+    const section = el?.closest("section");
+    if (!el || !section || prefersReducedMotion()) return undefined;
+
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        el,
+        { yPercent: -8 },
+        {
+          yPercent: 8,
+          ease: "none",
+          scrollTrigger: {
+            trigger: section,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: true,
+          },
+        }
+      );
+    });
+
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <div ref={wrapperRef}>
+      <OrbitalText {...props} />
+    </div>
+  );
+}
 
 function CounterStat({ stat, isEn }) {
   const prefersReducedMotion = useReducedMotion();
@@ -64,7 +107,7 @@ function About() {
     >
       {orbitalBuilding && (
         <div className="absolute left-[2%] top-[10%] -z-[1]" aria-hidden>
-          <OrbitalText text={orbitalBuilding} size={240} direction={-1} />
+          <ParallaxOrbitalText text={orbitalBuilding} size={240} direction={-1} />
         </div>
       )}
       <div className="max-w-3xl w-full mx-auto">

@@ -11,6 +11,15 @@ import { fadeUp, staggerContainer } from "../lib/motion";
 const container = staggerContainer({ stagger: 0.1, delayChildren: 0.2 });
 const card = fadeUp;
 
+/** Small stagger container/item for the tech-tag pills — inherits the card's
+ * whileInView state via variants only (no separate viewport trigger), same
+ * nested-reveal pattern already used in Skills.jsx to avoid flicker. */
+const tagContainer = staggerContainer({ stagger: 0.04, delayChildren: 0 });
+const tagItem = {
+  hidden: { opacity: 0, y: 4 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.25 } },
+};
+
 const TILT_MAX_DEG = 3.5;
 const TILT_SPRING = { stiffness: 220, damping: 20, mass: 0.4 };
 
@@ -178,17 +187,18 @@ function ProjectCard({ project, index, t, language, onSelect }) {
           {description}
         </p>
 
-        <div className="flex flex-wrap gap-2 min-h-[3.25rem] mb-4">
-          {tech.map((item) => (
-            <span
-              key={item}
+        <motion.div variants={tagContainer} className="flex flex-wrap gap-2 min-h-[3.25rem] mb-4">
+          {tech.map((techItem) => (
+            <motion.span
+              key={techItem}
+              variants={tagItem}
               className="hover-lift px-2.5 py-1 text-xs font-medium rounded-lg bg-theme-card border border-theme"
               style={{ color: "var(--text-muted)" }}
             >
-              {item}
-            </span>
+              {techItem}
+            </motion.span>
           ))}
-        </div>
+        </motion.div>
 
         <div className="flex-1 min-h-2" />
 

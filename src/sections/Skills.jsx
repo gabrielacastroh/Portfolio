@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useTransform, useReducedMotion } from "framer-motion";
 import { useRef, useState } from "react";
 import { skillCategories } from "../data/mockData";
 import { getTranslation } from "../data/translations";
@@ -15,7 +15,7 @@ const skillVariants = {
   show: { opacity: 1, scale: 1, transition: { duration: 0.25 } },
 };
 
-function SkillBadge({ skill }) {
+function SkillBadge({ skill, index = 0 }) {
   const iconSlug = skill.icon || "codepen";
   const primarySrc = resolveSkillIconSrc(iconSlug);
   const [iconSrc, setIconSrc] = useState(primarySrc);
@@ -27,11 +27,12 @@ function SkillBadge({ skill }) {
       variants={skillVariants}
       whileHover={{ y: -2 }}
       transition={{ duration: 0.2 }}
-      className="group/skill flex items-center gap-2 rounded-xl border px-2.5 py-2 transition-colors duration-200 hover:border-[color:var(--accent)]"
+      className="skill-float group/skill flex items-center gap-2 rounded-xl border px-2.5 py-2 transition-colors duration-200 hover:border-[color:var(--accent)]"
       style={{
         borderColor: "var(--border)",
         backgroundColor: "var(--bg-card)",
         color: "var(--text-primary)",
+        animationDelay: `${(index % 4) * 0.3}s`,
       }}
     >
       <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-white/5 dark:bg-black/10">
@@ -58,20 +59,58 @@ function SkillBadge({ skill }) {
   );
 }
 
+/**
+ * One shared cursor spotlight per category card (not per badge) — same
+ * technique as Projects.jsx's ProjectCard: motion values updated from a
+ * local onMouseMove handler drive a --mx/--my radial-gradient overlay.
+ * Gated to fine-pointer hover devices and off under reduced motion.
+ */
 function SkillCategory({ category, language }) {
   const label = language === "en" ? category.labelEn : category.label;
+  const cardRef = useRef(null);
+  const prefersReducedMotion = useReducedMotion();
+  const mx = useMotionValue(50);
+  const my = useMotionValue(50);
+  const mxPercent = useTransform(mx, (v) => `${v}%`);
+  const myPercent = useTransform(my, (v) => `${v}%`);
+
+  const handleMouseMove = (e) => {
+    if (
+      prefersReducedMotion ||
+      typeof window === "undefined" ||
+      !window.matchMedia("(hover: hover) and (pointer: fine)").matches
+    ) {
+      return;
+    }
+    const el = cardRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    mx.set(((e.clientX - rect.left) / rect.width) * 100);
+    my.set(((e.clientY - rect.top) / rect.height) * 100);
+  };
 
   return (
     <motion.div
+      ref={cardRef}
       variants={categoryVariants}
-      className="group/cat flex flex-col rounded-2xl border p-4 sm:p-5 transition-all duration-300 hover:border-[var(--accent)]/25"
+      onMouseMove={handleMouseMove}
+      className="group/cat relative flex flex-col overflow-hidden rounded-2xl border p-4 sm:p-5 transition-all duration-300 hover:border-[var(--accent)]/25"
       style={{
         borderColor: "var(--border)",
         backgroundColor: "var(--bg-card)",
+        "--mx": mxPercent,
+        "--my": myPercent,
       }}
     >
+      <div
+        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover/cat:opacity-100"
+        style={{
+          background: "radial-gradient(circle at var(--mx) var(--my), rgba(167, 139, 250, 0.14), transparent 60%)",
+        }}
+        aria-hidden
+      />
       <span
-        className="mb-3 text-[10px] font-bold uppercase tracking-widest"
+        className="relative mb-3 text-[10px] font-bold uppercase tracking-widest"
         style={{ color: "var(--accent)" }}
       >
         {label}
@@ -80,9 +119,9 @@ function SkillCategory({ category, language }) {
           SkillCategory's animate state (hidden/show) so both levels of the
           reveal cascade run off a single viewport trigger instead of two
           separate ones. */}
-      <motion.div variants={containerVariants} className="grid grid-cols-2 gap-2">
-        {category.skills.map((skill) => (
-          <SkillBadge key={skill.name} skill={skill} />
+      <motion.div variants={containerVariants} className="relative grid grid-cols-2 gap-2">
+        {category.skills.map((skill, index) => (
+          <SkillBadge key={skill.name} skill={skill} index={index} />
         ))}
       </motion.div>
     </motion.div>

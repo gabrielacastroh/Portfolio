@@ -1,13 +1,64 @@
+import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { whatIBuild } from "../data/mockData";
 import { getTranslation } from "../data/translations";
 import { useLanguage } from "../contexts/LanguageContext";
 import TitleReveal from "../components/TitleReveal";
 import Watermark from "../components/Watermark";
 import { fadeUp, staggerContainer } from "../lib/motion";
+import { prefersReducedMotion } from "../lib/smoothScroll";
 
 const container = staggerContainer({ stagger: 0.1, delayChildren: 0.2 });
 const card = fadeUp;
+
+/**
+ * Thin decorative connecting line drawn behind the card row via ScrollTrigger
+ * scrub as the row enters the viewport — purely decorative, aria-hidden,
+ * pointer-events-none. Reduced motion: renders fully drawn, no scrub.
+ */
+function ConnectingLine({ rowRef }) {
+  const lineRef = useRef(null);
+  const reduced = prefersReducedMotion();
+
+  useEffect(() => {
+    const el = lineRef.current;
+    const row = rowRef.current;
+    if (!el || !row || reduced) return undefined;
+
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        el,
+        { scaleX: 0 },
+        {
+          scaleX: 1,
+          ease: "none",
+          scrollTrigger: {
+            trigger: row,
+            start: "top 85%",
+            end: "top 45%",
+            scrub: true,
+          },
+        }
+      );
+    });
+
+    return () => ctx.revert();
+  }, [rowRef, reduced]);
+
+  return (
+    <div
+      ref={lineRef}
+      aria-hidden
+      className="pointer-events-none absolute left-0 right-0 top-1/2 -z-[1] h-px origin-left"
+      style={{
+        backgroundColor: "var(--border)",
+        transform: reduced ? "scaleX(1)" : undefined,
+      }}
+    />
+  );
+}
 
 const ICONS = {
   systems: (
@@ -78,6 +129,7 @@ function WhatIBuildCard({ entry, language, floatDelay }) {
 function WhatIBuild() {
   const { language } = useLanguage();
   const t = (key) => getTranslation(language, key);
+  const rowRef = useRef(null);
 
   return (
     <section
@@ -106,12 +158,14 @@ function WhatIBuild() {
         </motion.div>
 
         <motion.div
+          ref={rowRef}
           variants={container}
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-60px" }}
-          className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
+          className="relative grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
         >
+          <ConnectingLine rowRef={rowRef} />
           {whatIBuild.map((entry, i) => (
             <WhatIBuildCard key={entry.id} entry={entry} language={language} floatDelay={i * 0.4} />
           ))}

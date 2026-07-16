@@ -223,6 +223,22 @@ body {
   }
 }
 
+/* ===== Motion layer: Skills badge ambient float (CSS-only, cheap for ~30 badges) ===== */
+@keyframes skill-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .skill-float {
+    animation: skill-float 4s ease-in-out infinite;
+  }
+}
+
 /* ===== Motion layer: navbar link underline (slide in from left) ===== */
 .nav-link-underline {
   position: relative;
