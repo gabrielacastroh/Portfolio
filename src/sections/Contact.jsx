@@ -233,7 +233,7 @@ function Contact() {
           }
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: prefersReducedMotion ? 0.4 : 0.7, ease: EASE }}
-          className="rounded-2xl border bg-theme-card p-6 sm:p-8 backdrop-blur-sm"
+          className="rounded-2xl border bg-theme-card-solid p-6 sm:p-8"
           style={{ borderColor: "var(--border)" }}
         >
           <h3 className="font-display font-bold text-lg sm:text-xl mb-4 sm:mb-5" style={{ color: "var(--text-primary)" }}>

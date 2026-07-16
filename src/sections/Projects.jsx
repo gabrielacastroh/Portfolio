@@ -120,7 +120,7 @@ function ProjectCard({ project, index, t, language, onSelect }) {
         "--mx": glowXPercent,
         "--my": glowYPercent,
       }}
-      className="group relative flex flex-col h-full rounded-2xl border bg-theme-card overflow-hidden backdrop-blur-sm transition-all duration-300 hover:opacity-95 cursor-pointer"
+      className="group relative flex flex-col h-full rounded-2xl border bg-theme-card-solid overflow-hidden transition-all duration-300 hover:opacity-95 cursor-pointer"
     >
       {/* Imagen: 16:9 fija arriba */}
       <div className="relative w-full aspect-video shrink-0 rounded-t-2xl overflow-hidden bg-theme-base">
@@ -157,7 +157,7 @@ function ProjectCard({ project, index, t, language, onSelect }) {
         )}
         {typeLabel && (
           <span
-            className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[0.65rem] font-semibold uppercase tracking-wide backdrop-blur-sm transition-transform duration-300 ease-out group-hover:-translate-y-0.5"
+            className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[0.65rem] font-semibold uppercase tracking-wide transition-transform duration-300 ease-out group-hover:-translate-y-0.5"
             style={
               isClientProject
                 ? { backgroundColor: "var(--accent)", color: "#fff" }

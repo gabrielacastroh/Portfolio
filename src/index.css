@@ -43,6 +43,10 @@ html {
   --border-subtle: rgba(255, 255, 255, 0.05);
   --accent: #a78bfa;
   --bg-card: rgba(255, 255, 255, 0.04);
+  /* Solid-ish surface for large cards (WhatIBuild/Projects/Contact form) —
+     no backdrop-filter needed to read as separated from the background, see
+     the .bg-theme-card-solid comment below for why blur was removed there. */
+  --bg-card-solid: rgba(24, 22, 32, 0.82);
   --navbar-bg: rgba(10, 10, 14, 0.85);
   --line-muted: rgba(255, 255, 255, 0.15);
   --glow-bg: radial-gradient(ellipse 100% 80% at 75% 35%, rgba(140, 60, 180, 0.22), transparent 55%),
@@ -60,6 +64,7 @@ html {
   --border-subtle: rgba(0, 0, 0, 0.06);
   --accent: #7c3aed;
   --bg-card: rgba(0, 0, 0, 0.04);
+  --bg-card-solid: rgba(255, 255, 255, 0.86);
   --navbar-bg: rgba(255, 255, 255, 0.9);
   --line-muted: rgba(0, 0, 0, 0.15);
   --glow-bg: radial-gradient(ellipse 100% 80% at 75% 35%, rgba(140, 60, 180, 0.14), transparent 55%),
@@ -75,6 +80,15 @@ html {
 .border-theme-subtle { border-color: var(--border-subtle); }
 .bg-theme-base { background-color: var(--bg-base); }
 .bg-theme-card { background-color: var(--bg-card); }
+/* Large card surfaces (WhatIBuild/Projects/Contact form) use this instead of
+   backdrop-blur-sm + the near-transparent --bg-card: the fixed aurora layer
+   keeps moving relative to these cards as the page scrolls past it, so any
+   backdrop-filter on them forces the GPU to keep re-sampling the blur behind
+   every card, every scroll frame — measured as real compositor stalls up to
+   ~280ms during scroll (invisible to JS-side timing, very visible on screen).
+   A solid-enough flat background reads as separated from the background
+   without that cost. */
+.bg-theme-card-solid { background-color: var(--bg-card-solid); }
 .hover-accent:hover { color: var(--accent); }
 input::placeholder,
 textarea::placeholder { color: var(--text-muted-2); opacity: 0.8; }

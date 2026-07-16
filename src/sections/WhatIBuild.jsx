@@ -70,7 +70,7 @@ function WhatIBuildCard({ entry, language, floatDelay }) {
   return (
     <motion.article
       variants={card}
-      className="group flex flex-col h-full rounded-2xl border bg-theme-card p-5 sm:p-6 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:opacity-95"
+      className="group flex flex-col h-full rounded-2xl border bg-theme-card-solid p-5 sm:p-6 transition-all duration-300 hover:-translate-y-1 hover:opacity-95"
       style={{ borderColor: "var(--border)" }}
     >
       <div
