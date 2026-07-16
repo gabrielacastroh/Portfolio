@@ -235,7 +235,7 @@ function Contact() {
           }
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: prefersReducedMotion ? 0.4 : 0.7, ease: EASE }}
-          className="rounded-2xl border bg-theme-card-solid p-6 sm:p-8"
+          className="rounded-2xl border bg-theme-card p-6 sm:p-8 backdrop-blur-sm"
           style={{ borderColor: "var(--border)" }}
         >
           <h3 className="font-display font-bold text-lg sm:text-xl mb-4 sm:mb-5" style={{ color: "var(--text-primary)" }}>
@@ -264,7 +264,7 @@ function Contact() {
                 required
                 value={form.name}
                 onChange={handleChange}
-                className="w-full px-4 py-3 sm:py-3.5 rounded-lg bg-theme-card border focus:outline-none focus:ring-2 transition-all text-base"
+                className="w-full px-4 py-3 sm:py-3.5 rounded-lg bg-theme-card border focus:outline-none focus:ring-2 transition-[border-color,box-shadow] text-base"
                 style={{ borderColor: "var(--border)", color: "var(--text-primary)", ["--tw-ring-color"]: "var(--accent)" }}
                 placeholder={t("contact.placeholderName")}
               />
@@ -280,7 +280,7 @@ function Contact() {
                 required
                 value={form.email}
                 onChange={handleChange}
-                className="w-full px-4 py-3 sm:py-3.5 rounded-lg bg-theme-card border focus:outline-none focus:ring-2 transition-all text-base"
+                className="w-full px-4 py-3 sm:py-3.5 rounded-lg bg-theme-card border focus:outline-none focus:ring-2 transition-[border-color,box-shadow] text-base"
                 style={{ borderColor: "var(--border)", color: "var(--text-primary)", ["--tw-ring-color"]: "var(--accent)" }}
                 placeholder={t("contact.placeholderEmail")}
               />
@@ -296,7 +296,7 @@ function Contact() {
                 rows={4}
                 value={form.message}
                 onChange={handleChange}
-                className="w-full px-4 py-3 sm:py-3.5 rounded-lg bg-theme-card border focus:outline-none focus:ring-2 transition-all resize-none text-base"
+                className="w-full px-4 py-3 sm:py-3.5 rounded-lg bg-theme-card border focus:outline-none focus:ring-2 transition-[border-color,box-shadow] resize-none text-base"
                 style={{ borderColor: "var(--border)", color: "var(--text-primary)", ["--tw-ring-color"]: "var(--accent)" }}
                 placeholder={t("contact.placeholderMessage")}
               />
@@ -306,7 +306,7 @@ function Contact() {
               disabled={status === "sending"}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="w-full py-3 sm:py-4 px-6 rounded-xl font-medium text-base text-white bg-gradient-to-r from-[#7c3aed] to-[#a78bfa] hover:from-[#6d28d9] hover:to-[#8b5cf6] focus:outline-none focus:ring-2 focus:ring-[#a78bfa]/50 disabled:opacity-70 disabled:cursor-not-allowed transition-all shadow-lg shadow-[#7c3aed]/20"
+              className="w-full py-3 sm:py-4 px-6 rounded-xl font-medium text-base text-white bg-gradient-to-r from-[#7c3aed] to-[#a78bfa] hover:from-[#6d28d9] hover:to-[#8b5cf6] focus:outline-none focus:ring-2 focus:ring-[#a78bfa]/50 disabled:opacity-70 disabled:cursor-not-allowed transition-colors shadow-lg shadow-[#7c3aed]/20"
             >
               {status === "sending" ? t("contact.sending") : t("contact.sendButton")}
             </motion.button>

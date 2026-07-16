@@ -6,6 +6,7 @@ import { useLanguage } from "../contexts/useLanguage";
 import TitleReveal from "../components/TitleReveal";
 import { fadeUp, staggerContainer } from "../lib/motion";
 import { resolveSkillIconSrc, getFallbackIconUrl } from "../lib/skillIcons";
+import { hasFinePointer } from "../lib/pointer";
 
 const containerVariants = staggerContainer({ stagger: 0.07, delayChildren: 0.1 });
 const categoryVariants = fadeUp;
@@ -86,11 +87,7 @@ function SkillCategory({ category, language }) {
   const myPercent = useTransform(my, (v) => `${v}%`);
 
   const handleMouseMove = (e) => {
-    if (
-      prefersReducedMotion ||
-      typeof window === "undefined" ||
-      !window.matchMedia("(hover: hover) and (pointer: fine)").matches
-    ) {
+    if (prefersReducedMotion || !hasFinePointer()) {
       return;
     }
     const el = cardRef.current;
@@ -105,7 +102,7 @@ function SkillCategory({ category, language }) {
       ref={cardRef}
       variants={categoryVariants}
       onMouseMove={handleMouseMove}
-      className="group/cat relative flex flex-col overflow-hidden rounded-2xl border p-4 sm:p-5 transition-all duration-300 hover:border-[var(--accent)]/25"
+      className="group/cat relative flex flex-col overflow-hidden rounded-2xl border p-4 sm:p-5 transition-colors duration-300 hover:border-[var(--accent)]/25"
       style={{
         borderColor: "var(--border)",
         backgroundColor: "var(--bg-card)",

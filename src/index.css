@@ -43,11 +43,13 @@ html {
   --border-subtle: rgba(255, 255, 255, 0.05);
   --accent: #a78bfa;
   --bg-card: rgba(255, 255, 255, 0.04);
-  /* Solid-ish surface for large cards (WhatIBuild/Projects/Contact form) —
-     no backdrop-filter needed to read as separated from the background, see
-     the .bg-theme-card-solid comment below for why blur was removed there. */
+  /* Flat surface available to any card that needs to drop its backdrop-filter —
+     see the .bg-theme-card-solid comment below for the measured cost of blur
+     over the aurora, and lower this alpha to let more aurora through. */
   --bg-card-solid: rgba(24, 22, 32, 0.82);
-  --navbar-bg: rgba(10, 10, 14, 0.85);
+  /* Near-opaque because the navbar carries no backdrop-filter — see Navbar.jsx
+     and the .bg-theme-card-solid comment below for why blur is kept off it. */
+  --navbar-bg: rgba(10, 10, 14, 0.95);
   --line-muted: rgba(255, 255, 255, 0.15);
   --glow-bg: radial-gradient(ellipse 100% 80% at 75% 35%, rgba(140, 60, 180, 0.22), transparent 55%),
     radial-gradient(ellipse 80% 60% at 60% 75%, rgba(220, 80, 100, 0.12), transparent 50%),
@@ -65,7 +67,7 @@ html {
   --accent: #7c3aed;
   --bg-card: rgba(0, 0, 0, 0.04);
   --bg-card-solid: rgba(255, 255, 255, 0.86);
-  --navbar-bg: rgba(255, 255, 255, 0.9);
+  --navbar-bg: rgba(255, 255, 255, 0.95);
   --line-muted: rgba(0, 0, 0, 0.15);
   --glow-bg: radial-gradient(ellipse 100% 80% at 75% 35%, rgba(140, 60, 180, 0.14), transparent 55%),
     radial-gradient(ellipse 80% 60% at 60% 75%, rgba(220, 80, 100, 0.08), transparent 50%),
@@ -80,14 +82,25 @@ html {
 .border-theme-subtle { border-color: var(--border-subtle); }
 .bg-theme-base { background-color: var(--bg-base); }
 .bg-theme-card { background-color: var(--bg-card); }
-/* Large card surfaces (WhatIBuild/Projects/Contact form) use this instead of
-   backdrop-blur-sm + the near-transparent --bg-card: the fixed aurora layer
-   keeps moving relative to these cards as the page scrolls past it, so any
-   backdrop-filter on them forces the GPU to keep re-sampling the blur behind
-   every card, every scroll frame — measured as real compositor stalls up to
-   ~280ms during scroll (invisible to JS-side timing, very visible on screen).
-   A solid-enough flat background reads as separated from the background
-   without that cost. */
+/* KNOWN COST OF backdrop-filter OVER THE AURORA — read before adding one.
+   The aurora layer (App.jsx) is fixed and animates transform on infinite
+   keyframes, so it never settles. Anything with a backdrop-filter over it
+   forces the GPU to re-sample the blur every frame: for elements that also
+   move past it while scrolling (the large cards), that was measured on a real
+   GPU-composited browser as compositor stalls up to ~283ms during scroll —
+   16 severe stalls across the page, down to 1-2 (noise) once blur was removed.
+   It is invisible to JS-side timing (zero long tasks), so headless profiling
+   will not show it.
+
+   The large cards (WhatIBuild/Projects/Contact form) currently carry
+   backdrop-blur-sm again: a deliberate design call, made with that measurement
+   on the table. The navbar does NOT (see Navbar.jsx) — it is fixed, so its
+   blur would re-sample permanently, even on an idle page.
+
+   .bg-theme-card-solid is the zero-cost alternative, kept ready: swap a card's
+   `bg-theme-card backdrop-blur-sm` for `bg-theme-card-solid` to trade the blur
+   for a flat surface. Lowering --bg-card-solid's alpha lets more aurora through
+   without any re-sampling. */
 .bg-theme-card-solid { background-color: var(--bg-card-solid); }
 .hover-accent:hover { color: var(--accent); }
 input::placeholder,

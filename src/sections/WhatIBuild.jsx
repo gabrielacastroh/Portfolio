@@ -70,7 +70,12 @@ function WhatIBuildCard({ entry, language, floatDelay }) {
   return (
     <motion.article
       variants={card}
-      className="group flex flex-col h-full rounded-2xl border bg-theme-card-solid p-5 sm:p-6 transition-all duration-300 hover:-translate-y-1 hover:opacity-95"
+      // The hover lift goes through framer, not a `hover:-translate-y-*` class:
+      // the entrance variant already writes transform inline on this element, so
+      // a CSS transform would be overwritten and never render. Same authority as
+      // the entrance means the two compose instead of fighting.
+      whileHover={{ y: -4 }}
+      className="group flex flex-col h-full rounded-2xl border bg-theme-card p-5 sm:p-6 backdrop-blur-sm transition-colors duration-300"
       style={{ borderColor: "var(--border)" }}
     >
       <div

@@ -6,6 +6,7 @@ import { useLanguage } from "../contexts/useLanguage";
 import ProjectModal from "../components/ProjectModal";
 import TitleReveal from "../components/TitleReveal";
 import { fadeUp, staggerContainer } from "../lib/motion";
+import { hasFinePointer } from "../lib/pointer";
 
 const container = staggerContainer({ stagger: 0.1, delayChildren: 0.2 });
 const card = fadeUp;
@@ -52,10 +53,7 @@ function ProjectCard({ project, index, t, language, onSelect }) {
   const glowXPercent = useTransform(glowX, (v) => `${v}%`);
   const glowYPercent = useTransform(glowY, (v) => `${v}%`);
 
-  const canTilt = () =>
-    !prefersReducedMotion &&
-    typeof window !== "undefined" &&
-    window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  const canTilt = () => !prefersReducedMotion && hasFinePointer();
 
   const handleCardMouseMove = (e) => {
     if (!canTilt()) return;
@@ -76,10 +74,7 @@ function ProjectCard({ project, index, t, language, onSelect }) {
   };
 
   const canHoverPreview = () =>
-    previewVideo &&
-    !prefersReducedMotion &&
-    typeof window !== "undefined" &&
-    window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    previewVideo && !prefersReducedMotion && hasFinePointer();
 
   const handleMouseEnter = () => {
     if (!canHoverPreview()) return;
@@ -120,7 +115,7 @@ function ProjectCard({ project, index, t, language, onSelect }) {
         "--mx": glowXPercent,
         "--my": glowYPercent,
       }}
-      className="group relative flex flex-col h-full rounded-2xl border bg-theme-card-solid overflow-hidden transition-all duration-300 hover:opacity-95 cursor-pointer"
+      className="group relative flex flex-col h-full rounded-2xl border bg-theme-card overflow-hidden backdrop-blur-sm transition-colors duration-300 cursor-pointer"
     >
       {/* Imagen: 16:9 fija arriba */}
       <div className="relative w-full aspect-video shrink-0 rounded-t-2xl overflow-hidden bg-theme-base">
@@ -157,7 +152,7 @@ function ProjectCard({ project, index, t, language, onSelect }) {
         )}
         {typeLabel && (
           <span
-            className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[0.65rem] font-semibold uppercase tracking-wide transition-transform duration-300 ease-out group-hover:-translate-y-0.5"
+            className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[0.65rem] font-semibold uppercase tracking-wide backdrop-blur-sm transition-transform duration-300 ease-out group-hover:-translate-y-0.5"
             style={
               isClientProject
                 ? { backgroundColor: "var(--accent)", color: "#fff" }
@@ -172,7 +167,7 @@ function ProjectCard({ project, index, t, language, onSelect }) {
       {/* Contenido */}
       <div className="flex flex-col flex-1 min-h-0 p-4 sm:p-5 md:p-6">
         <h3
-          className="font-display font-bold text-base sm:text-lg mb-2 line-clamp-2 transition-all duration-300 ease-out group-hover:opacity-80 group-hover:-translate-y-0.5"
+          className="font-display font-bold text-base sm:text-lg mb-2 line-clamp-2 transition-[opacity,transform] duration-300 ease-out group-hover:opacity-80 group-hover:-translate-y-0.5"
           style={{ color: "var(--text-primary)" }}
           title={title}
         >
@@ -215,7 +210,7 @@ function ProjectCard({ project, index, t, language, onSelect }) {
               rel="noopener noreferrer"
               whileHover={{ scale: 1.02, y: -2 }}
               whileTap={{ scale: 0.98 }}
-              className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium border transition-all hover:opacity-90 hover:border-[color:var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/50"
+              className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium border transition-[color,background-color,border-color,opacity] hover:opacity-90 hover:border-[color:var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/50"
               style={{
                 borderColor: "var(--border)",
                 backgroundColor: "var(--bg-card)",
@@ -235,7 +230,7 @@ function ProjectCard({ project, index, t, language, onSelect }) {
               rel="noopener noreferrer"
               whileHover={{ scale: 1.02, y: -2 }}
               whileTap={{ scale: 0.98 }}
-              className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium text-white transition-all focus:outline-none focus:ring-2 focus:ring-white/30 shadow-lg"
+              className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white/30 shadow-lg"
               style={{
                 background: "linear-gradient(135deg, #7c3aed 0%, #a78bfa 50%, #c4b5fd 100%)",
                 boxShadow: "0 0 0 1px rgba(255,255,255,0.1), 0 4px 14px rgba(124, 58, 237, 0.35)",

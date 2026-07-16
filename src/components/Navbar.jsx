@@ -32,10 +32,16 @@ function Navbar() {
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? "backdrop-blur-xl shadow-[0_1px_3px_0_rgba(0,0,0,0.12)]" : ""
+      className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 ${
+        scrolled ? "shadow-[0_1px_3px_0_rgba(0,0,0,0.12)]" : ""
       }`}
       style={{
+        // No backdrop-filter here: the navbar is fixed over the aurora layer,
+        // which animates transform on infinite keyframes and never settles, so
+        // a blur would force a full-width GPU re-sample every frame even on an
+        // idle page — the same trade already made for cards, see the
+        // .bg-theme-card-solid comment in index.css. A near-opaque --navbar-bg
+        // carries the separation instead.
         backgroundColor: scrolled ? "var(--navbar-bg)" : "transparent",
         backfaceVisibility: "hidden",
         WebkitBackfaceVisibility: "hidden",
@@ -158,7 +164,7 @@ function Navbar() {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.25 }}
-            className="md:hidden overflow-hidden backdrop-blur-xl border-b border-theme-subtle"
+            className="md:hidden overflow-hidden border-b border-theme-subtle"
             style={{ backgroundColor: "var(--navbar-bg)" }}
           >
             <ul className="px-4 sm:px-6 py-4 flex flex-col gap-1">
