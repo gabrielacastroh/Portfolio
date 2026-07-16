@@ -5,7 +5,6 @@ import { getTranslation } from "../data/translations";
 import { useLanguage } from "../contexts/LanguageContext";
 import ProjectModal from "../components/ProjectModal";
 import TitleReveal from "../components/TitleReveal";
-import Watermark from "../components/Watermark";
 import { fadeUp, staggerContainer } from "../lib/motion";
 
 const container = staggerContainer({ stagger: 0.1, delayChildren: 0.2 });
@@ -274,7 +273,6 @@ function Projects() {
         id="projects"
         className="relative min-h-screen min-h-[100dvh] flex flex-col justify-center px-4 sm:px-6 py-16 sm:py-24 border-t border-theme-subtle overflow-hidden"
       >
-        <Watermark text="SYSTEMS" className="left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
         <div className="max-w-6xl mx-auto w-full">
           <motion.div
             initial={{ opacity: 0, y: 20 }}

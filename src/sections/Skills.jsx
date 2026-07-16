@@ -27,34 +27,45 @@ function SkillBadge({ skill, index = 0 }) {
       variants={skillVariants}
       whileHover={{ y: -2 }}
       transition={{ duration: 0.2 }}
-      className="skill-float group/skill flex items-center gap-2 rounded-xl border px-2.5 py-2 transition-colors duration-200 hover:border-[color:var(--accent)]"
+      className="group/skill rounded-xl border px-2.5 py-2 transition-colors duration-200 hover:border-[color:var(--accent)]"
       style={{
         borderColor: "var(--border)",
         backgroundColor: "var(--bg-card)",
         color: "var(--text-primary)",
-        animationDelay: `${(index % 4) * 0.3}s`,
       }}
     >
-      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-white/5 dark:bg-black/10">
-        <img
-          src={iconSrc}
-          alt=""
-          className="h-4 w-4 object-contain transition-opacity duration-300 ease-out"
-          style={{ opacity: iconLoaded ? 1 : 0 }}
-          width={16}
-          height={16}
-          onLoad={() => setIconLoaded(true)}
-          onError={() => {
-            if (triedFallback.current) return;
-            triedFallback.current = true;
-            setIconLoaded(false);
-            setIconSrc(getFallbackIconUrl());
-          }}
-        />
-      </span>
-      <span className="text-xs font-medium min-w-0 truncate" style={{ color: "var(--text-muted)" }}>
-        {skill.name}
-      </span>
+      {/* Ambient float lives on this inner element, not the motion.div above:
+          framer-motion's entrance (opacity/scale) and this CSS keyframe both
+          animate `transform` — on the same element they fight for it (framer
+          leaves a static inline transform after entrance that permanently
+          wins the cascade over the CSS animation, and during the overlap
+          window the two visibly race). Separate elements, separate `transform`
+          ownership, no conflict. */}
+      <div
+        className="skill-float flex items-center gap-2"
+        style={{ animationDelay: `${(index % 4) * 0.3}s` }}
+      >
+        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-white/5 dark:bg-black/10">
+          <img
+            src={iconSrc}
+            alt=""
+            className="h-4 w-4 object-contain transition-opacity duration-300 ease-out"
+            style={{ opacity: iconLoaded ? 1 : 0 }}
+            width={16}
+            height={16}
+            onLoad={() => setIconLoaded(true)}
+            onError={() => {
+              if (triedFallback.current) return;
+              triedFallback.current = true;
+              setIconLoaded(false);
+              setIconSrc(getFallbackIconUrl());
+            }}
+          />
+        </span>
+        <span className="text-xs font-medium min-w-0 truncate" style={{ color: "var(--text-muted)" }}>
+          {skill.name}
+        </span>
+      </div>
     </motion.div>
   );
 }

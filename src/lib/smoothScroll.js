@@ -60,7 +60,19 @@ export function useSmoothScroll() {
     gsap.ticker.add(tickerFn);
     gsap.ticker.lagSmoothing(0);
 
+    // Trigger positions are measured with fallback-font metrics on mount;
+    // when Syne/Outfit finish loading the layout height shifts and scrubbed
+    // animations would visibly jump on the next auto-refresh. Re-measure as
+    // soon as the webfonts settle instead.
+    let cancelled = false;
+    if (typeof document !== "undefined" && document.fonts?.ready) {
+      document.fonts.ready.then(() => {
+        if (!cancelled) ScrollTrigger.refresh();
+      });
+    }
+
     return () => {
+      cancelled = true;
       gsap.ticker.remove(tickerFn);
       lenis.off("scroll", onScroll);
       lenis.destroy();

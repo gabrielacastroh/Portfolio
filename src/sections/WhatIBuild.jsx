@@ -1,61 +1,30 @@
-import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { whatIBuild } from "../data/mockData";
 import { getTranslation } from "../data/translations";
 import { useLanguage } from "../contexts/LanguageContext";
 import TitleReveal from "../components/TitleReveal";
-import Watermark from "../components/Watermark";
-import { fadeUp, staggerContainer } from "../lib/motion";
-import { prefersReducedMotion } from "../lib/smoothScroll";
+import { fadeUp, staggerContainer, scaleXReveal } from "../lib/motion";
 
 const container = staggerContainer({ stagger: 0.1, delayChildren: 0.2 });
 const card = fadeUp;
 
 /**
- * Thin decorative connecting line drawn behind the card row via ScrollTrigger
- * scrub as the row enters the viewport — purely decorative, aria-hidden,
- * pointer-events-none. Reduced motion: renders fully drawn, no scrub.
+ * Thin decorative connecting line drawn behind the card row. Uses the SAME
+ * `variants`/`whileInView` entrance as the cards (via the shared `container`
+ * context) instead of an independent GSAP scroll-scrub. A scrub tied to raw
+ * scroll position completes instantly whenever the row is entered by a jump
+ * (nav click, reload with scroll restored) rather than a gradual scroll —
+ * the line would render fully drawn before the cards' own entrance had time
+ * to play, since the two were on unrelated timelines. Piggybacking on the
+ * cards' one-shot entrance guarantees they always stay in lockstep.
  */
-function ConnectingLine({ rowRef }) {
-  const lineRef = useRef(null);
-  const reduced = prefersReducedMotion();
-
-  useEffect(() => {
-    const el = lineRef.current;
-    const row = rowRef.current;
-    if (!el || !row || reduced) return undefined;
-
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        el,
-        { scaleX: 0 },
-        {
-          scaleX: 1,
-          ease: "none",
-          scrollTrigger: {
-            trigger: row,
-            start: "top 85%",
-            end: "top 45%",
-            scrub: true,
-          },
-        }
-      );
-    });
-
-    return () => ctx.revert();
-  }, [rowRef, reduced]);
-
+function ConnectingLine() {
   return (
-    <div
-      ref={lineRef}
+    <motion.div
+      variants={scaleXReveal}
       aria-hidden
       className="pointer-events-none absolute left-0 right-0 top-1/2 -z-[1] h-px origin-left"
-      style={{
-        backgroundColor: "var(--border)",
-        transform: reduced ? "scaleX(1)" : undefined,
-      }}
+      style={{ backgroundColor: "var(--border)" }}
     />
   );
 }
@@ -129,14 +98,12 @@ function WhatIBuildCard({ entry, language, floatDelay }) {
 function WhatIBuild() {
   const { language } = useLanguage();
   const t = (key) => getTranslation(language, key);
-  const rowRef = useRef(null);
 
   return (
     <section
       id="what-i-build"
       className="relative min-h-screen min-h-[100dvh] flex flex-col justify-center px-4 sm:px-6 py-16 sm:py-24 border-t border-theme-subtle overflow-hidden"
     >
-      <Watermark text="PRODUCTS" className="left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
       <div className="max-w-5xl mx-auto w-full">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -158,14 +125,13 @@ function WhatIBuild() {
         </motion.div>
 
         <motion.div
-          ref={rowRef}
           variants={container}
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-60px" }}
           className="relative grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
         >
-          <ConnectingLine rowRef={rowRef} />
+          <ConnectingLine />
           {whatIBuild.map((entry, i) => (
             <WhatIBuildCard key={entry.id} entry={entry} language={language} floatDelay={i * 0.4} />
           ))}

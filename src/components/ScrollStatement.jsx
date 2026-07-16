@@ -14,14 +14,19 @@ function Word({ word, index, total, scrollYProgress, isLast }) {
   const slice = 1 / total;
   const start = index * slice * 0.7;
   const end = start + slice * 1.6;
-  const color = useTransform(
+  // Paint via numeric opacity over the primary color: framer-motion cannot
+  // interpolate `var()` color strings (it snaps at the midpoint, which read
+  // as per-word flashing). Since --text-muted is the primary color at reduced
+  // alpha, an opacity ramp reproduces the muted→primary design faithfully in
+  // both themes while animating a compositor-friendly value.
+  const opacity = useTransform(
     scrollYProgress,
     [Math.max(0, start), Math.min(1, end)],
-    ["var(--text-muted)", "var(--text-primary)"]
+    [0.35, 1]
   );
 
   return (
-    <motion.span aria-hidden style={{ color }}>
+    <motion.span aria-hidden style={{ opacity, color: "var(--text-primary)" }}>
       {word}
       {!isLast ? " " : ""}
     </motion.span>

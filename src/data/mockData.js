@@ -78,7 +78,7 @@ export const easterEgg = {
 export const about = {
   title: "Sobre mí",
   titleEn: "About me",
-  photo: "/photo-contact.png",
+  photo: "/photo-contact.webp",
 
   description: `Construyo software porque me gusta que las cosas funcionen bien, no solo que funcionen. Me importa que un sistema sea fácil de entender un año después de escribirlo, no solo el día que se entrega.
 
