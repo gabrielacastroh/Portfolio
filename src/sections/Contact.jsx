@@ -109,7 +109,9 @@ function InfoCard({ icon, label, value, href, external }) {
         href={href}
         target={external ? "_blank" : undefined}
         rel={external ? "noopener noreferrer" : undefined}
-        className={`${baseClass} hover-lift focus:outline-none focus:ring-2`}
+        whileHover={{ y: -2, scale: 1.015, borderColor: "var(--accent)" }}
+        transition={{ duration: 0.2 }}
+        className={`${baseClass} focus:outline-none focus:ring-2`}
         style={style}
       >
         {content}

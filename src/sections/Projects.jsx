@@ -191,7 +191,9 @@ function ProjectCard({ project, index, t, language, onSelect }) {
             <motion.span
               key={techItem}
               variants={tagItem}
-              className="hover-lift px-2.5 py-1 text-xs font-medium rounded-lg bg-theme-card border border-theme"
+              whileHover={{ y: -2, scale: 1.015, borderColor: "var(--accent)" }}
+              transition={{ duration: 0.2 }}
+              className="px-2.5 py-1 text-xs font-medium rounded-lg bg-theme-card border border-theme"
               style={{ color: "var(--text-muted)" }}
             >
               {techItem}

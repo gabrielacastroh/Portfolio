@@ -12,17 +12,21 @@ import { prefersReducedMotion as prefersReducedMotionStatic } from "../lib/smoot
 const container = staggerContainer({ stagger: 0.1, delayChildren: 0.15 });
 const step = fadeUp;
 
-const MUTED_OPACITY = 0.45;
 const ACTIVE_COLOR = "var(--accent)";
 const MUTED_COLOR = "var(--text-muted)";
 
 /**
- * Step number/text: on desktop its activation is driven entirely by the
- * section's master GSAP timeline (see HowIWork's ctx below), which owns
- * opacity/color via .to() calls positioned along the timeline. On mobile
- * (no connector, `sm:` and below) each step activates independently via its
- * own ScrollTrigger with toggleActions "play none none none" — plays once
- * and stays active, no reverse-pulse.
+ * Step number: opacity is owned entirely by the parent motion.div's
+ * framer-motion fadeUp entrance (see the render below) — GSAP never touches
+ * it. On desktop, the section's master GSAP timeline (see HowIWork's ctx
+ * below) only drives `color` via .to() calls positioned along the timeline,
+ * for the progressive muted->accent "walk the path" activation. On mobile
+ * (no connector, `sm:` and below) each step's color activates independently
+ * via its own ScrollTrigger with toggleActions "play none none none" — plays
+ * once and stays active, no reverse-pulse. Keeping opacity single-authority
+ * (framer only) avoids the parent/child opacity multiplying against GSAP's
+ * own, differently-timed animation — that produced a visible flicker during
+ * continuous scroll when both were animating opacity independently.
  */
 function HowIWorkStep({ entry, language, registerNumberRef }) {
   const isEn = language === "en";
@@ -39,15 +43,19 @@ function HowIWorkStep({ entry, language, registerNumberRef }) {
     // desktop master timeline (which only targets the sm:block connector
     // layout's steps visually, but this per-step trigger works everywhere
     // and is superseded visually by the master timeline where it also runs).
+    // Only touches `color` — opacity is owned entirely by the parent
+    // motion.div's fadeUp entrance (see HowIWorkStep's render below). GSAP
+    // used to also animate opacity here, which multiplied against the
+    // parent's independent framer-motion opacity fade and produced a
+    // flickery, unsynced brightness curve during continuous scroll.
     const mm = gsap.matchMedia();
     let ctx;
     mm.add("(max-width: 639px)", () => {
       ctx = gsap.context(() => {
         gsap.fromTo(
           el,
-          { opacity: MUTED_OPACITY, color: MUTED_COLOR },
+          { color: MUTED_COLOR },
           {
-            opacity: 1,
             color: ACTIVE_COLOR,
             duration: 0.4,
             ease: "power2.out",
@@ -75,7 +83,7 @@ function HowIWorkStep({ entry, language, registerNumberRef }) {
           registerNumberRef(el);
         }}
         className="font-display font-bold text-2xl sm:text-3xl inline-block"
-        style={{ color: reduced ? ACTIVE_COLOR : MUTED_COLOR, opacity: reduced ? 1 : MUTED_OPACITY }}
+        style={{ color: reduced ? ACTIVE_COLOR : MUTED_COLOR }}
       >
         {entry.step}
       </span>
@@ -138,9 +146,14 @@ function HowIWork() {
         const count = numbers.length;
         numbers.forEach((el, i) => {
           const pos = count > 1 ? i / (count - 1) : 0;
+          // Only `color` — opacity is owned by the parent motion.div's
+          // fadeUp entrance. Animating opacity here too used to multiply
+          // against that independent, differently-timed framer transition,
+          // producing an unsynced flicker between the number and the
+          // title/description right beside it during continuous scroll.
           tl.to(
             el,
-            { opacity: 1, color: ACTIVE_COLOR, duration: 0.15, ease: "none" },
+            { color: ACTIVE_COLOR, duration: 0.15, ease: "none" },
             pos
           );
           const lineEl = lines[i];
