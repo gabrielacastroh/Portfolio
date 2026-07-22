@@ -57,7 +57,6 @@ function About() {
   const title = isEn && about.titleEn ? about.titleEn : about.title;
   const description = isEn && about.descriptionEn ? about.descriptionEn : about.description;
   const shortBio = isEn && about.shortBioEn ? about.shortBioEn : about.shortBio;
-  const exploring = isEn && about.exploringEn ? about.exploringEn : about.exploring;
   const statement = isEn && about.statementEn ? about.statementEn : about.statement;
   const orbitalBuilding =
     isEn && about.orbitalBuildingEn ? about.orbitalBuildingEn : about.orbitalBuilding;
@@ -102,7 +101,7 @@ function About() {
               />
             )}
           </motion.div>
-          <div className="space-y-4 sm:space-y-6 flex-1 min-w-0">
+          <div className="space-y-4 sm:space-y-6 flex-1 min-w-0 w-full">
             <TitleReveal
               as="h2"
               text={title}
@@ -121,15 +120,6 @@ function About() {
               {description}
             </p>
             <p className="text-sm text-theme-muted-2">{shortBio}</p>
-            {exploring && (
-              <p
-                className="inline-flex items-center gap-2 text-xs sm:text-sm font-medium px-3 py-1.5 rounded-full border bg-theme-card"
-                style={{ borderColor: "var(--border)", color: "var(--accent)" }}
-              >
-                <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: "var(--accent)" }} aria-hidden />
-                {exploring}
-              </p>
-            )}
           </div>
         </motion.div>
       </div>
