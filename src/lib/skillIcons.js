@@ -53,6 +53,14 @@ export const ICON_SOURCE_OVERRIDES = {
   axecore: "https://api.iconify.design/mdi:accessibility.svg",
 };
 
+/** Overrides son SVGs fijos sin color propio (`path` sin `fill` → negro por
+ * defecto del navegador) — no se pueden recolorear vía URL como los de
+ * simpleicons.org. Los llamadores en contexto monochrome necesitan saberlo
+ * para aplicar un filtro CSS en su lugar. */
+export function isFixedColorSource(slug) {
+  return Boolean(ICON_SOURCE_OVERRIDES[slug]);
+}
+
 /** URL de respaldo si la imagen falla al cargar. */
 export function getFallbackIconUrl() {
   const hex = SKILL_COLORS.codepen;

@@ -2,7 +2,7 @@ import { useState } from "react";
 import FastMarquee from "react-fast-marquee";
 import { useReducedMotion } from "framer-motion";
 import { techMarquee } from "../data/mockData";
-import { resolveSkillIconSrc, getFallbackIconUrl } from "../lib/skillIcons";
+import { resolveSkillIconSrc, getFallbackIconUrl, isFixedColorSource } from "../lib/skillIcons";
 import { useTheme } from "../contexts/useTheme";
 
 /** Theme-aware monochrome hex for the marquee logos — noticeably whiter on
@@ -43,6 +43,17 @@ function TechLogo({ item, monochromeHex }) {
     : erroredOnce
       ? getFallbackIconUrl()
       : resolveSkillIconSrc(item.slug, { monochrome: true, monochromeHex });
+  // Fixed-asset overrides (e.g. AWS) ignore monochromeHex — their SVG has no
+  // `fill`, which browsers default to black, invisible on the dark theme.
+  // invert(1) maps that black to white, then brightness tunes it toward the
+  // theme's target gray. ponytail: filter approximation, not pixel-exact —
+  // swap for a CSS mask-image recolor if an exact hex match is ever needed.
+  const needsColorFilter = hasIcon && !erroredOnce && isFixedColorSource(item.slug);
+  const colorFilter = needsColorFilter
+    ? monochromeHex === MONOCHROME_HEX_BY_THEME.dark
+      ? "invert(1) brightness(0.9)"
+      : "invert(1) brightness(0.42)"
+    : undefined;
 
   if (!hasIcon) {
     return (
@@ -71,7 +82,7 @@ function TechLogo({ item, monochromeHex }) {
         // there is no blank gap to fade over, and forcing one back to 0 would
         // flash every logo out mid View Transition. Only the genuinely blank
         // states — first load and the fallback swap — need the fade.
-        style={{ opacity: loaded ? 0.6 : 0 }}
+        style={{ opacity: loaded ? 0.6 : 0, filter: colorFilter }}
         onLoad={() => setLoaded(true)}
         onError={() => {
           if (erroredOnce) return;
