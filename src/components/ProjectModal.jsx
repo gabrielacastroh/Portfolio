@@ -71,6 +71,28 @@ const fadeUp = {
   show: { opacity: 1, y: 0, transition: { duration: 0.35, ease: [0.16, 1, 0.3, 1] } },
 };
 
+/* ─── Case-study block (Problem / Solution / Architecture / Impact-or-Demonstrates) ── */
+
+function CaseStudyBlock({ label, text }) {
+  if (!text) return null;
+  return (
+    <div>
+      <h3
+        className="text-[0.65rem] font-semibold uppercase tracking-[0.12em] mb-2"
+        style={{ color: "var(--text-muted-2)" }}
+      >
+        {label}
+      </h3>
+      <p
+        className="text-sm sm:text-[0.9375rem] leading-relaxed"
+        style={{ color: "var(--text-muted)" }}
+      >
+        {text}
+      </p>
+    </div>
+  );
+}
+
 /* ─── Modal ───────────────────────────────────────────────────────────── */
 
 function ProjectModal({ project, onClose, t, language }) {
@@ -94,9 +116,17 @@ function ProjectModal({ project, onClose, t, language }) {
   const typeLabel = isEn && project.typeLabelEn ? project.typeLabelEn : project.typeLabel;
   const isClientProject = project.type === "client";
 
-  const fullDesc = isEn
-    ? project.longDescriptionEn || project.descriptionEn || project.description
-    : project.longDescription || project.description;
+  // ponytail: problem/solution/architecture already carry (and extend) what
+  // longDescription used to say in one unstructured paragraph — rendering
+  // both would repeat the same sentences twice, so the case-study blocks
+  // below replace the old fullDesc paragraph rather than sitting next to it.
+  const problem = isEn ? project.problemEn : project.problem;
+  const solution = isEn ? project.solutionEn : project.solution;
+  const architecture = isEn ? project.architectureEn : project.architecture;
+  const fourthLabel = isClientProject ? t("projects.impactLabel") : t("projects.demonstratesLabel");
+  const fourthText = isClientProject
+    ? isEn ? project.impactEn : project.impact
+    : isEn ? project.whatItDemonstratesEn : project.whatItDemonstrates;
 
   const highlights = isEn
     ? project.highlightsEn ?? project.highlights ?? []
@@ -208,14 +238,12 @@ function ProjectModal({ project, onClose, t, language }) {
               </motion.div>
             )}
 
-            {/* Full description */}
-            <motion.div variants={fadeUp}>
-              <p
-                className="text-sm sm:text-[0.9375rem] leading-relaxed whitespace-pre-line"
-                style={{ color: "var(--text-muted)" }}
-              >
-                {fullDesc}
-              </p>
+            {/* Case study: Problem -> Solution -> Architecture -> Impact/Demonstrates */}
+            <motion.div variants={fadeUp} className="space-y-5">
+              <CaseStudyBlock label={t("projects.problemLabel")} text={problem} />
+              <CaseStudyBlock label={t("projects.solutionLabel")} text={solution} />
+              <CaseStudyBlock label={t("projects.architectureLabel")} text={architecture} />
+              <CaseStudyBlock label={fourthLabel} text={fourthText} />
             </motion.div>
 
             {/* Highlights */}

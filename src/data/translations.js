@@ -41,6 +41,11 @@ export const translations = {
       demo: "Demo",
       details: "Detalles",
       close: "Cerrar",
+      problemLabel: "Problema",
+      solutionLabel: "Solución",
+      architectureLabel: "Arquitectura",
+      impactLabel: "Impacto",
+      demonstratesLabel: "Qué demuestra",
     },
     howIWork: {
       title: "Cómo trabajo",
@@ -121,6 +126,11 @@ export const translations = {
       demo: "Demo",
       details: "Details",
       close: "Close",
+      problemLabel: "Problem",
+      solutionLabel: "Solution",
+      architectureLabel: "Architecture",
+      impactLabel: "Impact",
+      demonstratesLabel: "What it demonstrates",
     },
     howIWork: {
       title: "How I work",
