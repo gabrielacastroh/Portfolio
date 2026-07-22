@@ -3,13 +3,14 @@ import ScrollProgress from "./components/ScrollProgress";
 import SectionNav from "./components/SectionNav";
 import HolaEasterEgg from "./components/HolaEasterEgg";
 import Hero from "./sections/Hero";
+import TrustSection from "./sections/TrustSection";
 import Marquee from "./sections/Marquee";
-import WhatIBuild from "./sections/WhatIBuild";
 import About from "./sections/About";
-import TechMarquee from "./sections/TechMarquee";
+import WhatIBuild from "./sections/WhatIBuild";
 import Projects from "./sections/Projects";
 import HowIWork from "./sections/HowIWork";
 import Skills from "./sections/Skills";
+import TechMarquee from "./sections/TechMarquee";
 import Contact from "./sections/Contact";
 import { useSmoothScroll } from "./lib/smoothScroll";
 import { preloadRemoteAssets } from "./lib/preloadAssets";
@@ -54,13 +55,14 @@ function App() {
       <SectionNav />
       <main>
         <Hero />
+        <TrustSection />
         <Marquee />
+        <About />
         <WhatIBuild />
-        <TechMarquee />
         <Projects />
         <HowIWork />
-        <About />
         <Skills />
+        <TechMarquee />
         <Contact />
       </main>
       <HolaEasterEgg />
