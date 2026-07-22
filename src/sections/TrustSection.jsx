@@ -40,7 +40,7 @@ function CounterStat({ stat, isEn }) {
       variants={fadeUp}
       onViewportEnter={handleViewportEnter}
       viewport={{ once: true, margin: "-40px" }}
-      className="flex flex-col items-center gap-1 rounded-2xl border bg-theme-card-solid px-4 py-5 sm:py-6 text-center"
+      className="flex flex-col items-center gap-1 rounded-2xl border bg-theme-card backdrop-blur-sm px-4 py-5 sm:py-6 text-center"
       style={{ borderColor: "var(--border)" }}
     >
       <span className="font-display font-bold text-2xl sm:text-3xl" style={{ color: "var(--text-primary)" }}>
@@ -62,7 +62,7 @@ function BreadthPill() {
   return (
     <motion.div
       variants={fadeUp}
-      className="flex flex-col items-center justify-center gap-1 rounded-2xl border bg-theme-card-solid px-4 py-5 sm:py-6 text-center"
+      className="flex flex-col items-center justify-center gap-1 rounded-2xl border bg-theme-card backdrop-blur-sm px-4 py-5 sm:py-6 text-center"
       style={{ borderColor: "var(--border)" }}
     >
       <span className="font-display font-bold text-lg sm:text-xl" style={{ color: "var(--accent)" }}>
