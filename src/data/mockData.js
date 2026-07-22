@@ -7,7 +7,7 @@ export const personal = {
   location: "Barranquilla, Colombia",
   locationEn: "Barranquilla, Colombia",
   metaDescription:
-    "Portafolio de Gabriela Castro — Ingeniera de software. Construyo sistemas empresariales, productos SaaS y herramientas con IA, del modelo de datos a la interfaz.",
+    "Portafolio de Gabriela Castro — Ingeniera Full Stack. Construyo productos web y SaaS escalables con React, Django y AWS, con 3+ años de experiencia en producción.",
   rotatingPrefix: "Construyo",
   rotatingPrefixEn: "I build",
   rotatingWords: ["sistemas empresariales", "productos SaaS", "herramientas con IA"],
