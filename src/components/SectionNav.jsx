@@ -5,7 +5,7 @@ import { getTranslation } from "../data/translations";
 import { useLanguage } from "../contexts/useLanguage";
 import { scrollToSection } from "../lib/smoothScroll";
 
-const sectionIds = ["hero", "what-i-build", "projects", "how-i-work", "about", "skills", "contact"];
+const sectionIds = navLinks.map((link) => link.id);
 const sections = navLinks;
 
 const DOT_GAP = 28;

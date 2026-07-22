@@ -12,8 +12,8 @@ export const personal = {
     "Portafolio de Gabriela Castro — Ingeniera de software. Construyo sistemas empresariales, productos SaaS y herramientas con IA, del modelo de datos a la interfaz.",
   rotatingPrefix: "Construyo",
   rotatingPrefixEn: "I build",
-  rotatingWords: ["sistemas empresariales", "productos SaaS", "herramientas con IA", "experiencias web"],
-  rotatingWordsEn: ["business systems", "SaaS products", "AI-powered tools", "web experiences"],
+  rotatingWords: ["sistemas empresariales", "productos SaaS", "herramientas con IA"],
+  rotatingWordsEn: ["business systems", "SaaS products", "AI-powered tools"],
 };
 
 /** Marquee band between Hero and WhatIBuild — brand/keyword terms, largely
@@ -91,11 +91,8 @@ I'm a Systems Engineer from Barranquilla, Colombia. What drives me most is takin
 
 If you have a product or a system in mind, I can probably help you build it.`,
 
-  exploring: "Actualmente aprendiendo: AWS",
-  exploringEn: "Currently learning: AWS",
-
-  shortBio: "Ingeniera de Sistemas · React · Django REST · Flutter",
-  shortBioEn: "Systems Engineer · React · Django REST · Flutter",
+  shortBio: "Ingeniera de Sistemas · React · Django REST",
+  shortBioEn: "Systems Engineer · React · Django REST",
 
   statement: "Construyo software que resuelve problemas reales.",
   statementEn: "I build software that solves real problems.",
@@ -193,6 +190,22 @@ export const projects = [
       "Un negocio necesitaba dejar de operar en hojas de cálculo. Construí un CRM a medida: gestión de clientes, productos y operaciones con roles y permisos (JWT + RBAC), reportes en PDF/Excel y despliegue en AWS. Hoy centraliza la operación diaria del equipo.",
     longDescriptionEn:
       "A business needed to stop running its operations on spreadsheets. I built a custom CRM: client, product and operations management with roles and permissions (JWT + RBAC), PDF/Excel reporting and deployment on AWS. Today it centralizes the team's daily operations.",
+    problem:
+      "Un negocio operaba clientes, productos y reportes en hojas de cálculo dispersas, sin control de quién veía o modificaba qué.",
+    problemEn:
+      "A business ran clients, products and reporting off scattered spreadsheets, with no control over who could see or change what.",
+    solution:
+      "Construí un CRM a medida con roles y permisos (JWT + RBAC), generación de reportes en PDF/Excel bajo demanda y despliegue en AWS.",
+    solutionEn:
+      "I built a custom CRM with roles and permissions (JWT + RBAC), on-demand PDF/Excel reporting and AWS deployment.",
+    architecture:
+      "React en el frontend, Django REST Framework y PostgreSQL en el backend, todo containerizado con Docker y desplegado en AWS.",
+    architectureEn:
+      "React on the frontend, Django REST Framework and PostgreSQL on the backend, containerized with Docker and deployed on AWS.",
+    impact:
+      "El equipo dejó de depender de hojas de cálculo: hoy centraliza clientes, productos y operaciones en un solo sistema que usa a diario.",
+    impactEn:
+      "The team no longer depends on spreadsheets: it now runs clients, products and operations from a single system it uses daily.",
     image: "/projects/lumet-crm.png",
     screenshots: ["/projects/lumet-crm.png"],
     tech: ["React", "JavaScript", "Django REST", "PostgreSQL", "JWT", "AWS", "Docker", "Linux", "RBAC", "REST APIs"],
@@ -228,6 +241,22 @@ export const projects = [
       "Producto propio construido para explorar cómo la IA puede acelerar el trabajo de QA. Auditar accesibilidad, errores de consola y rendimiento de un sitio a mano toma horas y depende del criterio de quien lo revisa. Construí una plataforma que automatiza ese proceso: usa Playwright para capturar el sitio y monitorear errores, axe-core para accesibilidad WCAG y un LLM (vía Groq API) para redactar la revisión técnica en lenguaje natural. Hoy genera un reporte completo de cualquier URL pública en minutos.",
     longDescriptionEn:
       "Personal product built to explore how AI can speed up QA work. Manually auditing a site's accessibility, console errors and performance takes hours and depends on the reviewer's judgment. I built a platform that automates that process: it uses Playwright to capture the site and monitor errors, axe-core for WCAG accessibility analysis, and an LLM (via Groq API) to write the technical review in natural language. Today it generates a full report for any public URL in minutes.",
+    problem:
+      "Auditar accesibilidad, errores de consola y rendimiento de un sitio a mano toma horas y depende del criterio de quien lo revisa.",
+    problemEn:
+      "Manually auditing a site's accessibility, console errors and performance takes hours and depends on the reviewer's judgment.",
+    solution:
+      "Construí una plataforma que automatiza la auditoría completa y usa un LLM para redactar la revisión en lenguaje natural.",
+    solutionEn:
+      "I built a platform that automates the full audit and uses an LLM to write the review in natural language.",
+    architecture:
+      "Playwright captura el sitio y monitorea errores, axe-core evalúa accesibilidad WCAG, y un backend en FastAPI (Docker) coordina el LLM vía Groq API; frontend en React/TypeScript.",
+    architectureEn:
+      "Playwright captures the site and monitors errors, axe-core evaluates WCAG accessibility, and a dockerized FastAPI backend coordinates the LLM via Groq API; frontend in React/TypeScript.",
+    whatItDemonstrates:
+      "Cómo orquestar herramientas de automatización (Playwright, axe-core) con un LLM para producir un reporte técnico legible, no solo datos crudos.",
+    whatItDemonstratesEn:
+      "How to orchestrate automation tools (Playwright, axe-core) with an LLM to produce a readable technical report, not just raw data.",
     image: "/projects/qa-intelligence.png",
     screenshots: ["/projects/qa-intelligence.png"],
     tech: ["React", "TypeScript", "FastAPI", "Python", "Playwright", "Docker", "Groq API", "axe-core", "Tailwind CSS"],
@@ -263,6 +292,22 @@ export const projects = [
       "Producto propio construido para dominar arquitectura frontend a nivel de producto, no de tutorial. SYNC simula un tablero colaborativo moderno inspirado en Linear y Notion: tableros, columnas y tarjetas con drag-and-drop, persistencia local y simulación de colaboración en tiempo real. Hoy funciona como una demo completa de command palette, atajos de teclado y estado tipado a escala.",
     longDescriptionEn:
       "Personal product built to master frontend architecture at product level, not tutorial level. SYNC simulates a modern collaborative board inspired by Linear and Notion: boards, columns and cards with drag-and-drop, local persistence and simulated real-time collaboration. Today it works as a full demo of a command palette, keyboard shortcuts and typed state at scale.",
+    problem:
+      "Herramientas como Linear se sienten simples de usar pero son difíciles de replicar bien: drag-and-drop fluido, estado predecible y command palette a la vez.",
+    problemEn:
+      "Tools like Linear feel simple to use but are hard to replicate well: fluid drag-and-drop, predictable state and a command palette all at once.",
+    solution:
+      "Construí un tablero colaborativo con drag-and-drop entre columnas, persistencia local y una command palette con búsqueda global.",
+    solutionEn:
+      "I built a collaborative board with drag-and-drop across columns, local persistence and a command palette with global search.",
+    architecture:
+      "React con TypeScript estricto, Zustand para estado global, dnd-kit para el drag-and-drop y Framer Motion para las animaciones.",
+    architectureEn:
+      "React with strict TypeScript, Zustand for global state, dnd-kit for drag-and-drop and Framer Motion for animation.",
+    whatItDemonstrates:
+      "Cómo mantener el estado predecible a medida que crece una app frontend-only, sin backend detrás.",
+    whatItDemonstratesEn:
+      "How to keep state predictable as a frontend-only app grows, with no backend behind it.",
     image: "/projects/sync.png",
     screenshots: ["/projects/sync.png"],
     tech: ["React", "TypeScript", "Zustand", "Tailwind", "Framer Motion", "dnd-kit"],
@@ -298,6 +343,22 @@ export const projects = [
       "Producto propio construido para explorar cómo se ve una plataforma de product operations real, no una maqueta. ORBIT centraliza métricas de producto, adopción de funcionalidades y actividad del equipo, y permite gestionar colaboradores y correr experimentos A/B desde una sola interfaz. Hoy funciona con dashboards analíticos, control de roles y un command palette propios de una herramienta interna real.",
     longDescriptionEn:
       "Personal product built to explore what a real product operations platform looks like, not a mockup. ORBIT centralizes product metrics, feature adoption and team activity, and lets you manage contributors and run A/B experiments from a single interface. Today it runs with analytical dashboards, role-based access and a command palette typical of a real internal tool.",
+    problem:
+      "Los equipos de producto necesitan ver adopción, experimentos y actividad en un solo lugar, no repartido entre varias herramientas.",
+    problemEn:
+      "Product teams need to see adoption, experiments and activity in one place, not spread across multiple tools.",
+    solution:
+      "Construí una plataforma que centraliza métricas de producto, gestión de colaboradores y experimentos A/B en una sola interfaz.",
+    solutionEn:
+      "I built a platform that centralizes product metrics, contributor management and A/B experiments in a single interface.",
+    architecture:
+      "React con TanStack Query para estado del servidor y Zustand para estado de UI, dashboards con Recharts y control de roles.",
+    architectureEn:
+      "React with TanStack Query for server state and Zustand for UI state, Recharts dashboards and role-based access control.",
+    whatItDemonstrates:
+      "Cómo separar estado del servidor y estado de UI sin mezclar responsabilidades a medida que la app crece.",
+    whatItDemonstratesEn:
+      "How to separate server state from UI state without mixing responsibilities as the app grows.",
     image: "/projects/orbit.png",
     screenshots: ["/projects/orbit.png"],
     tech: ["React", "TypeScript", "Tailwind", "TanStack Query", "Zustand", "Recharts"],
@@ -333,6 +394,22 @@ export const projects = [
       "Producto propio construido para practicar un ciclo full-stack completo, de la base de datos a la interfaz. Momentum permite crear metas con subtareas, calcula automáticamente el porcentaje de progreso y visualiza la evolución con gráficos y rachas de actividad. El backend usa Django REST Framework con autenticación JWT y el sistema corre completo con Docker, listo para desplegarse sin configuración manual.",
     longDescriptionEn:
       "Personal product built to practice a complete full-stack cycle, from the database to the interface. Momentum lets you create goals with subtasks, automatically calculates progress percentage and visualizes evolution through charts and activity streaks. The backend uses Django REST Framework with JWT authentication, and the whole system runs on Docker, ready to deploy without manual setup.",
+    problem:
+      "Llevar el progreso de metas en notas sueltas no escala: no hay cálculo automático ni contexto histórico.",
+    problemEn:
+      "Tracking goal progress in scattered notes doesn't scale: no automatic calculation, no historical context.",
+    solution:
+      "Construí un sistema que calcula el progreso automáticamente a partir de subtareas y visualiza la evolución con gráficos y rachas.",
+    solutionEn:
+      "I built a system that calculates progress automatically from subtasks and visualizes evolution with charts and streaks.",
+    architecture:
+      "Backend en Django REST Framework con autenticación JWT, frontend en React/TypeScript, todo dockerizado para desplegar sin configuración manual.",
+    architectureEn:
+      "Django REST Framework backend with JWT authentication, React/TypeScript frontend, all dockerized to deploy without manual setup.",
+    whatItDemonstrates:
+      "Un ciclo full-stack completo, de la base de datos a la interfaz, con lógica de negocio (cálculo de progreso) en el backend.",
+    whatItDemonstratesEn:
+      "A complete full-stack cycle, from the database to the interface, with business logic (progress calculation) in the backend.",
     image: "/projects/momentum.png",
     screenshots: ["/projects/momentum.png"],
     tech: ["React", "TypeScript", "Django REST", "PostgreSQL", "Tailwind", "Docker"],
@@ -478,6 +555,6 @@ export const navLinks = [
   { id: "projects", label: "Proyectos", labelEn: "Projects", href: "#projects" },
   { id: "how-i-work", label: "Cómo trabajo", labelEn: "How I work", href: "#how-i-work" },
   { id: "about", label: "Sobre mí", labelEn: "About me", href: "#about" },
-  { id: "skills", label: "Skills", labelEn: "Skills", href: "#skills" },
+  { id: "skills", label: "Experiencia", labelEn: "Expertise", href: "#skills" },
   { id: "contact", label: "Contacto", labelEn: "Contact me", href: "#contact" },
 ];

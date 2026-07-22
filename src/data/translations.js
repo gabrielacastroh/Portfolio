@@ -23,6 +23,11 @@ export const translations = {
       title: "Qué construyo",
       subtitle: "Tres tipos de problemas que sé resolver de punta a punta.",
     },
+    trust: {
+      eyebrow: "En números",
+      heading: "Resultados que se pueden verificar",
+      subtitle: "Cifras honestas, sin inflar: esto es lo que hay hoy.",
+    },
     about: {
       title: "Sobre mí",
     },
@@ -40,8 +45,8 @@ export const translations = {
       title: "Cómo trabajo",
     },
     skills: {
-      title: "Skills",
-      subtitle: "Tecnologías y herramientas con las que trabajo a diario.",
+      title: "Experiencia técnica",
+      subtitle: "Tecnologías y herramientas que domino, organizadas por área.",
     },
     contact: {
       title: "Contacto",
@@ -97,6 +102,11 @@ export const translations = {
       title: "What I build",
       subtitle: "Three kinds of problems I solve end to end.",
     },
+    trust: {
+      eyebrow: "By the numbers",
+      heading: "Results you can verify",
+      subtitle: "Honest numbers, no inflation: this is what's real today.",
+    },
     about: {
       title: "About me",
     },
@@ -114,8 +124,8 @@ export const translations = {
       title: "How I work",
     },
     skills: {
-      title: "Skills",
-      subtitle: "Technologies and tools I work with every day.",
+      title: "Technical Expertise",
+      subtitle: "Technologies and tools I work with, organized by area.",
     },
     contact: {
       title: "Contact me",

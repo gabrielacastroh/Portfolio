@@ -54,6 +54,22 @@ html {
   --glow-bg: radial-gradient(ellipse 100% 80% at 75% 35%, rgba(140, 60, 180, 0.22), transparent 55%),
     radial-gradient(ellipse 80% 60% at 60% 75%, rgba(220, 80, 100, 0.12), transparent 50%),
     radial-gradient(ellipse 70% 70% at 85% 85%, rgba(60, 120, 220, 0.14), transparent 50%);
+
+  /* Radius scale: theme-independent, lives only in the shared root block.
+     Tailwind's spacing utilities stay the spacing system — this scale only
+     fixes the inconsistent mix of rounded-xl/2xl/full across cards. */
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+
+  /* Shadow scale: per-theme alpha (see [data-theme="light"] below).
+     --shadow-accent-glow tokenizes the magic string duplicated inline in
+     SectionNav.jsx; identical value in both themes since the accent glow
+     currently isn't theme-conditional. */
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 12px rgba(0, 0, 0, 0.25);
+  --shadow-elevated: 0 8px 24px rgba(0, 0, 0, 0.35), 0 2px 6px rgba(0, 0, 0, 0.3);
+  --shadow-accent-glow: 0 0 0 3px rgba(167, 139, 250, 0.25), 0 0 12px rgba(167, 139, 250, 0.4);
 }
 
 /* ===== Tema: modo claro (mismo estilo de fondo con brillos suaves) ===== */
@@ -72,6 +88,10 @@ html {
   --glow-bg: radial-gradient(ellipse 100% 80% at 75% 35%, rgba(140, 60, 180, 0.14), transparent 55%),
     radial-gradient(ellipse 80% 60% at 60% 75%, rgba(220, 80, 100, 0.08), transparent 50%),
     radial-gradient(ellipse 70% 70% at 85% 85%, rgba(60, 120, 220, 0.1), transparent 50%);
+
+  --shadow-card: 0 1px 2px rgba(16, 24, 40, 0.06), 0 4px 12px rgba(16, 24, 40, 0.08);
+  --shadow-elevated: 0 12px 28px rgba(16, 24, 40, 0.12), 0 2px 6px rgba(16, 24, 40, 0.08);
+  --shadow-accent-glow: 0 0 0 3px rgba(167, 139, 250, 0.25), 0 0 12px rgba(167, 139, 250, 0.4);
 }
 
 /* Utilidades que usan las variables del tema */
