@@ -27,7 +27,7 @@ function Word({ word, index, total, scrollYProgress, isLast }) {
   return (
     <motion.span aria-hidden style={{ opacity, color: "var(--text-primary)" }}>
       {word}
-      {!isLast ? " " : ""}
+      {!isLast ? " " : ""}
     </motion.span>
   );
 }
