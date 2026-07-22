@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { useEffect, useRef } from "react";
+import { motion } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { about, stats } from "../data/mockData";
+import { about } from "../data/mockData";
 import { useLanguage } from "../contexts/useLanguage";
 import TitleReveal from "../components/TitleReveal";
 import ScrollStatement from "../components/ScrollStatement";
@@ -47,44 +47,6 @@ function ParallaxOrbitalText(props) {
     <div ref={wrapperRef}>
       <OrbitalText {...props} />
     </div>
-  );
-}
-
-function CounterStat({ stat, isEn }) {
-  const prefersReducedMotion = useReducedMotion();
-  const [count, setCount] = useState(prefersReducedMotion ? stat.value : 0);
-  const hasAnimated = useRef(false);
-  const frameRef = useRef(null);
-  const label = isEn && stat.labelEn ? stat.labelEn : stat.label;
-
-  useEffect(() => () => cancelAnimationFrame(frameRef.current), []);
-
-  const handleViewportEnter = () => {
-    if (prefersReducedMotion || hasAnimated.current) return;
-    hasAnimated.current = true;
-    const duration = 900;
-    const start = performance.now();
-    const tick = (now) => {
-      const progress = Math.min((now - start) / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setCount(Math.round(eased * stat.value));
-      if (progress < 1) frameRef.current = requestAnimationFrame(tick);
-    };
-    frameRef.current = requestAnimationFrame(tick);
-  };
-
-  return (
-    <motion.div
-      onViewportEnter={handleViewportEnter}
-      viewport={{ once: true, margin: "-40px" }}
-      className="flex flex-col items-center md:items-start"
-    >
-      <span className="font-display font-bold text-xl sm:text-2xl" style={{ color: "var(--text-primary)" }}>
-        {count}
-        {stat.suffix}
-      </span>
-      <span className="text-xs sm:text-sm text-theme-muted-2">{label}</span>
-    </motion.div>
   );
 }
 
@@ -167,13 +129,6 @@ function About() {
                 <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: "var(--accent)" }} aria-hidden />
                 {exploring}
               </p>
-            )}
-            {stats && stats.length > 0 && (
-              <div className="flex flex-wrap justify-center md:justify-start gap-6 sm:gap-8 pt-2">
-                {stats.map((stat) => (
-                  <CounterStat key={stat.id} stat={stat} isEn={isEn} />
-                ))}
-              </div>
             )}
           </div>
         </motion.div>
