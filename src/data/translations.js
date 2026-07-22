@@ -18,10 +18,11 @@ export const translations = {
       hi: "Hola, soy",
       contactMe: "Contacto",
       downloadCv: "Descargar CV",
+      indicators: ["Aplicaciones web", "Plataformas SaaS", "Integraciones de IA", "Arquitectura en la nube"],
     },
     whatIBuild: {
       title: "Qué construyo",
-      subtitle: "Tres tipos de problemas que sé resolver de punta a punta.",
+      subtitle: "Esto es lo que puedo construir para ti: tres tipos de problemas que resuelvo de punta a punta.",
     },
     trust: {
       eyebrow: "En números",
@@ -97,10 +98,11 @@ export const translations = {
       hi: "Hi, I'm",
       contactMe: "Contact me",
       downloadCv: "Download CV",
+      indicators: ["Web Applications", "SaaS Platforms", "AI Integrations", "Cloud Architecture"],
     },
     whatIBuild: {
       title: "What I build",
-      subtitle: "Three kinds of problems I solve end to end.",
+      subtitle: "Here's what I can build for you: three kinds of problems I solve end to end.",
     },
     trust: {
       eyebrow: "By the numbers",

@@ -116,6 +116,7 @@ function Hero() {
   const cvUrl = isEn ? contact.cvUrlEn : contact.cvUrlEs;
   const rotatingPrefix = isEn && personal.rotatingPrefixEn ? personal.rotatingPrefixEn : personal.rotatingPrefix;
   const rotatingWords = isEn && personal.rotatingWordsEn ? personal.rotatingWordsEn : personal.rotatingWords;
+  const indicators = t("hero.indicators");
 
   return (
     <section
@@ -157,6 +158,23 @@ function Hero() {
         )}
         {rotatingWords && rotatingWords.length > 0 && (
           <RotatingBuild prefix={rotatingPrefix} words={rotatingWords} />
+        )}
+
+        {Array.isArray(indicators) && indicators.length > 0 && (
+          <motion.ul
+            variants={item}
+            className="mt-6 sm:mt-8 flex flex-wrap items-center justify-center gap-2"
+          >
+            {indicators.map((label) => (
+              <li
+                key={label}
+                className="px-3 py-1.5 rounded-full border bg-theme-card text-xs sm:text-sm font-medium"
+                style={{ borderColor: "var(--border)", color: "var(--text-muted)" }}
+              >
+                {label}
+              </li>
+            ))}
+          </motion.ul>
         )}
 
         <motion.div

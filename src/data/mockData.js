@@ -1,11 +1,9 @@
 export const personal = {
   name: "Gabriela Castro",
-  professionalTitle: "Ingeniera de software · Construyo productos y sistemas completos",
-  professionalTitleEn: "Software engineer · I build complete products and systems",
-  tagline:
-    "Del modelo de datos a la interfaz: diseño y construyo sistemas empresariales, productos SaaS y herramientas con IA que resuelven problemas reales.",
-  taglineEn:
-    "From the data model to the interface: I design and build business systems, SaaS products and AI-powered tools that solve real problems.",
+  professionalTitle: "Ingeniera Full Stack · Construyo productos web y SaaS escalables",
+  professionalTitleEn: "Full Stack Engineer building scalable web and SaaS products",
+  tagline: "3+ años construyendo software en producción con React, Django y AWS.",
+  taglineEn: "3+ years building production software with React, Django and AWS.",
   location: "Barranquilla, Colombia",
   locationEn: "Barranquilla, Colombia",
   metaDescription:
