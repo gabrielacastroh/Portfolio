@@ -549,10 +549,10 @@ export const contact = {
 
 export const navLinks = [
   { id: "hero", label: "Inicio", labelEn: "Home", href: "#hero" },
+  { id: "about", label: "Sobre mí", labelEn: "About me", href: "#about" },
   { id: "what-i-build", label: "Qué construyo", labelEn: "What I build", href: "#what-i-build" },
   { id: "projects", label: "Proyectos", labelEn: "Projects", href: "#projects" },
   { id: "how-i-work", label: "Cómo trabajo", labelEn: "How I work", href: "#how-i-work" },
-  { id: "about", label: "Sobre mí", labelEn: "About me", href: "#about" },
   { id: "skills", label: "Experiencia", labelEn: "Expertise", href: "#skills" },
   { id: "contact", label: "Contacto", labelEn: "Contact me", href: "#contact" },
 ];
